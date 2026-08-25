@@ -7,7 +7,9 @@ import VCModal from './components/VCModal';
 import CompareModal from './components/CompareModal';
 import AnalyticsView from './components/AnalyticsView';
 import ContactModal from './components/ContactModal';
+import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { VC_FUNDS } from './data/vcFunds';
 import { slugify } from './data/categories';
 import { Search, Sparkles, ArrowUp, Scale } from 'lucide-react';
@@ -64,7 +66,7 @@ export function updateSEO({ title, description, canonicalUrl, fund = null }) {
   }
 }
 
-export default function App() {
+function MainApp() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTier, setSelectedTier] = useState('All Tiers');
   const [selectedRegion, setSelectedRegion] = useState('All Regions');
@@ -433,6 +435,9 @@ export default function App() {
         onClose={() => setIsContactOpen(false)}
       />
 
+      {/* Google Authentication & Registration Modal */}
+      <AuthModal />
+
       {/* Scroll to Top Floating Button */}
       {showScrollTop && (
         <button
@@ -447,5 +452,13 @@ export default function App() {
       {/* Footer */}
       <Footer onOpenContact={() => setIsContactOpen(true)} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
   );
 }
