@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { X, ShieldCheck, Sparkles, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { X, ShieldCheck, Sparkles, Lock, ArrowRight, CheckCircle2, HelpCircle, Info, Database, UserCheck, Download, ExternalLink } from 'lucide-react';
 
 export function GoogleLogo({ className = "w-5 h-5" }) {
   return (
@@ -54,31 +54,31 @@ export default function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
         onClick={closeAuthModal}
-        className="fixed inset-0 bg-slate-900/70 backdrop-blur-md transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-slate-900/75 backdrop-blur-md transition-opacity animate-in fade-in duration-200"
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden z-10 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden z-10 animate-in zoom-in-95 duration-200 max-h-[95vh] flex flex-col">
         {/* Accent Gradient Line */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 via-indigo-600 to-amber-500" />
+        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 via-indigo-600 to-amber-500 shrink-0" />
 
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
-          className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer z-10"
           title="Close dialog"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="p-6 sm:p-8">
+        <div className="p-6 sm:p-8 overflow-y-auto">
           {/* Header Icon + Brand */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-extrabold text-lg shadow-md">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-extrabold text-lg shadow-md shrink-0">
               <span className="bg-gradient-to-tr from-emerald-400 via-cyan-300 to-indigo-400 bg-clip-text text-transparent">VC</span>
             </div>
             <div>
@@ -86,42 +86,67 @@ export default function AuthModal() {
                 Global &amp; India <span className="text-indigo-600">VC Index</span>
               </div>
               <div className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> Founder &amp; Investor Intelligence
+                <ShieldCheck className="w-3.5 h-3.5" /> Verified Founder &amp; Investor Network
               </div>
             </div>
           </div>
 
           {/* Dynamic Intent Title & Message */}
-          <div className="mb-6">
-            <h3 className="text-lg sm:text-xl font-black font-heading text-slate-900 tracking-tight leading-snug">
+          <div className="mb-5">
+            <h3 className="text-xl sm:text-2xl font-black font-heading text-slate-900 tracking-tight leading-snug">
               {authIntent.title || 'Google Authentication & Registration Required'}
             </h3>
             <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-              {authIntent.message || 'Please sign in or register with Google to unlock official fund links, verified partner directories, and CSV/JSON export tools.'}
+              {authIntent.message || 'Quick Google 1-tap sign-in is required to view full fund intelligence, open official investor portals, and export investor pipelines.'}
             </p>
           </div>
 
-          {/* Unlocked Benefits */}
-          <div className="mb-6 rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2.5">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              Unlocked Free Member Benefits:
+          {/* Detailed "Why is Registration Required?" Explainer Box */}
+          <div className="mb-5 rounded-2xl bg-indigo-50/60 p-4 border border-indigo-100 space-y-2.5">
+            <div className="flex items-center gap-2 text-indigo-900 font-extrabold text-xs uppercase tracking-wide">
+              <Info className="w-4 h-4 text-indigo-600 shrink-0" />
+              <span>Why is Registration Required?</span>
             </div>
-            <div className="space-y-2 text-xs text-slate-700">
+            <p className="text-xs text-indigo-950/85 leading-relaxed">
+              To protect verified venture partner contacts and maintain sovereign intelligence for genuine founders and investors, free registration with Google is required:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px] text-indigo-900 font-medium">
+              <div className="flex items-start gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                <span><strong>Bot Protection:</strong> Prevents automated scraping of partner directories.</span>
+              </div>
+              <div className="flex items-start gap-1.5">
+                <ExternalLink className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />
+                <span><strong>Direct Link Access:</strong> Unrestricted official VC portals &amp; pitch links.</span>
+              </div>
+              <div className="flex items-start gap-1.5">
+                <Download className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+                <span><strong>CRM Exports:</strong> 1-Click CSV/JSON investor pipeline downloads.</span>
+              </div>
+              <div className="flex items-start gap-1.5">
+                <UserCheck className="w-3.5 h-3.5 text-cyan-600 shrink-0 mt-0.5" />
+                <span><strong>Saved Target Lists:</strong> Syncs your shortlisted VCs across devices.</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Unlocked Full Member Features Checklist */}
+          <div className="mb-5 rounded-2xl bg-slate-50 p-4 border border-slate-200/80 space-y-2">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Free Member Features Unlocked:
+            </div>
+            <div className="space-y-1.5 text-xs text-slate-700">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Direct links to <strong>official VC portals &amp; pitch links</strong></span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>Full access to <strong>55+ Global &amp; India VC Intelligence Profiles</strong></span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
-                <span><strong>Key General Partner profiles</strong> &amp; LinkedIn socials</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                <span>Direct access to <strong>official fund pitch portals &amp; GP socials</strong></span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                <span><strong>1-Click CSV &amp; JSON</strong> investor target list export</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-cyan-600 shrink-0" />
-                <span>Unlimited <strong>side-by-side fund comparisons</strong></span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <span>Unlimited <strong>side-by-side fund comparison matrix</strong></span>
               </div>
             </div>
           </div>
@@ -137,11 +162,11 @@ export default function AuthModal() {
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-slate-400 text-slate-800 font-bold text-sm shadow-xs transition-all duration-200 hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
+            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-indigo-400 text-slate-800 font-bold text-sm shadow-xs transition-all duration-200 hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
           >
             {loading ? (
               <div className="flex items-center gap-2 text-slate-600">
-                <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
                 <span>Connecting with Google...</span>
               </div>
             ) : (
@@ -154,9 +179,9 @@ export default function AuthModal() {
           </button>
 
           {/* Trust Notice */}
-          <div className="mt-4 text-center">
+          <div className="mt-3.5 text-center">
             <p className="text-[11px] text-slate-400 leading-normal">
-              Zero spam. We only verify your email to prevent automated scraping of investor data.
+              100% Free &bull; Instant 1-tap Google verification &bull; Zero spam guarantee
             </p>
           </div>
         </div>
