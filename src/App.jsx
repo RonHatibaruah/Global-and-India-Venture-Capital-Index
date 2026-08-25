@@ -8,6 +8,7 @@ import CompareModal from './components/CompareModal';
 import AnalyticsView from './components/AnalyticsView';
 import ContactModal from './components/ContactModal';
 import AuthModal from './components/AuthModal';
+import AdminModal from './components/AdminModal';
 import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { VC_FUNDS } from './data/vcFunds';
@@ -67,7 +68,7 @@ export function updateSEO({ title, description, canonicalUrl, fund = null }) {
 }
 
 function MainApp() {
-  const { currentUser, requireAuth, openAuthModal } = useAuth();
+  const { currentUser, requireAuth, openAuthModal, adminModalOpen, setAdminModalOpen, trackActivity } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTier, setSelectedTier] = useState('All Tiers');
   const [selectedRegion, setSelectedRegion] = useState('All Regions');
@@ -213,6 +214,7 @@ function MainApp() {
 
     requireAuth(null, () => {
       setSelectedFund(fund);
+      trackActivity('FUND_VIEW', { fundName: fund.name, rank: fund.rank, aum: fund.aum, tier: fund.tier });
       const slug = slugify(fund.name);
       window.history.pushState({ fundId: fund.id }, '', `/fund/${slug}`);
       updateSEO({
@@ -229,6 +231,8 @@ function MainApp() {
 
   const toggleFavorite = (id) => {
     requireAuth(null, () => {
+      const fund = VC_FUNDS.find(f => f.id === id);
+      trackActivity('BOOKMARK', { fundId: id, fundName: fund ? fund.name : id });
       setFavorites((prev) =>
         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
       );
@@ -240,6 +244,7 @@ function MainApp() {
 
   const toggleCompare = (fund) => {
     requireAuth(null, () => {
+      trackActivity('COMPARE', { fundName: fund.name, rank: fund.rank });
       setComparedFunds((prev) => {
         const exists = prev.some((f) => f.id === fund.id);
         if (exists) {
@@ -259,6 +264,7 @@ function MainApp() {
 
   const handleOpenCompare = () => {
     requireAuth(null, () => {
+      trackActivity('VIEW_COMPARE_DRAWER', { count: comparedFunds.length });
       setIsCompareOpen(true);
     }, {
       title: 'Sign In to Open Comparison Matrix',
@@ -341,6 +347,7 @@ function MainApp() {
 
   // Export JSON
   const handleExportJson = () => {
+    trackActivity('EXPORT_JSON', { count: filteredFunds.length });
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(filteredFunds, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
@@ -352,6 +359,7 @@ function MainApp() {
 
   // Export CSV
   const handleExportCsv = () => {
+    trackActivity('EXPORT_CSV', { count: filteredFunds.length });
     const headers = ['Rank', 'Fund Name', 'Prestige Tier', 'AUM', 'HQ Location', 'Region', 'Has India Investments', 'Primary Stage', 'Check Size', 'Generation-Defining Exits', 'Active Portfolio Unicorns', 'Key Partners', 'Website'];
     const rows = filteredFunds.map((f) => [
       f.rank,
@@ -498,6 +506,12 @@ function MainApp() {
 
       {/* Google Authentication & Registration Modal */}
       <AuthModal />
+
+      {/* Admin Dashboard Modal (Accessible only for kalyanjit@gmail.com) */}
+      <AdminModal
+        isOpen={adminModalOpen}
+        onClose={() => setAdminModalOpen(false)}
+      />
 
       {/* Scroll to Top Floating Button */}
       {showScrollTop && (

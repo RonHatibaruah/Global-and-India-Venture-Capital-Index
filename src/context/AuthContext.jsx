@@ -1,5 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { auth, googleProvider, loginWithGoogle, logoutUser, onAuthStateChanged } from '../services/firebase';
+import {
+  auth,
+  googleProvider,
+  loginWithGoogle,
+  logoutUser,
+  onAuthStateChanged,
+  recordUserProfile,
+  logActivity,
+  isAdminUser,
+  ADMIN_EMAIL
+} from '../services/firebase';
 
 const AuthContext = createContext(null);
 
@@ -7,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [authIntent, setAuthIntent] = useState({
     title: 'Sign in with Google Required',
     message: 'Please sign in or register with Google to access direct fund links, partner contacts, and intelligence features.',
@@ -16,8 +27,11 @@ export const AuthProvider = ({ children }) => {
 
   // Subscribe to Firebase Auth State Changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      if (user) {
+        await recordUserProfile(user);
+      }
       setLoading(false);
     });
     return () => unsubscribe();
@@ -42,13 +56,19 @@ export const AuthProvider = ({ children }) => {
     setPendingCallback(null);
   }, []);
 
+  // Track user activity helper
+  const trackActivity = useCallback(async (actionType, details = {}) => {
+    if (currentUser) {
+      await logActivity(currentUser, actionType, details);
+    }
+  }, [currentUser]);
+
   // Sign In with Google
   const signInGoogle = async () => {
     const { user, error } = await loginWithGoogle();
     if (user) {
       setAuthModalOpen(false);
 
-      // If there was a targetUrl or pending callback, execute it immediately
       if (authIntent.targetUrl) {
         window.open(authIntent.targetUrl, '_blank', 'noopener,noreferrer');
       }
@@ -62,10 +82,13 @@ export const AuthProvider = ({ children }) => {
 
   // Sign Out
   const signOut = async () => {
+    if (currentUser) {
+      await logActivity(currentUser, 'LOGOUT', { message: 'User signed out' });
+    }
     return await logoutUser();
   };
 
-  // Helper to guard any link click or action
+  // Helper to guard any link click or action with Google Authentication
   const requireAuth = useCallback((e, targetUrlOrAction, options = {}) => {
     if (e && typeof e.preventDefault === 'function') {
       e.preventDefault();
@@ -74,6 +97,7 @@ export const AuthProvider = ({ children }) => {
 
     if (currentUser) {
       if (typeof targetUrlOrAction === 'string') {
+        trackActivity('EXTERNAL_LINK', { url: targetUrlOrAction, title: options.title || 'External Link' });
         window.open(targetUrlOrAction, '_blank', 'noopener,noreferrer');
       } else if (typeof targetUrlOrAction === 'function') {
         targetUrlOrAction(currentUser);
@@ -87,7 +111,10 @@ export const AuthProvider = ({ children }) => {
         targetUrl: targetUrlOrAction,
         title: options.title || 'Sign In to Access Link',
         message: options.message || `Sign in or register with Google to access this link (${targetUrlOrAction}).`,
-        onSuccess: () => window.open(targetUrlOrAction, '_blank', 'noopener,noreferrer')
+        onSuccess: (user) => {
+          logActivity(user, 'EXTERNAL_LINK', { url: targetUrlOrAction, title: options.title || 'External Link' });
+          window.open(targetUrlOrAction, '_blank', 'noopener,noreferrer');
+        }
       });
     } else if (typeof targetUrlOrAction === 'function') {
       openAuthModal({
@@ -97,18 +124,25 @@ export const AuthProvider = ({ children }) => {
       });
     }
     return false;
-  }, [currentUser, openAuthModal]);
+  }, [currentUser, openAuthModal, trackActivity]);
+
+  const isAdmin = isAdminUser(currentUser);
 
   const value = {
     currentUser,
+    isAdmin,
+    adminEmail: ADMIN_EMAIL,
     loading,
     authModalOpen,
     authIntent,
+    adminModalOpen,
+    setAdminModalOpen,
     openAuthModal,
     closeAuthModal,
     signInGoogle,
     signOut,
-    requireAuth
+    requireAuth,
+    trackActivity
   };
 
   return (
