@@ -18,13 +18,250 @@ import {
   Mail,
   Users,
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  GitCommit,
+  Clock,
+  Zap,
+  Target,
+  BarChart2,
+  Flag,
+  DollarSign
 } from 'lucide-react';
 import {
   FUNDRAISING_CHAPTERS,
   EMAIL_TEMPLATES,
   READINESS_QUESTIONS
 } from '../data/fundraisingGuideData';
+
+// --- Visual Diagram 1: Venture Capital Lifecycle & Dilution Waterfall ---
+function LifecycleWaterfallDiagram() {
+  const stages = [
+    { name: 'Pre-Seed', val: '$2.5M - $6M', dilution: '10-15%', founderOwn: '85-90%', arr: '$0 - $10k MRR', color: 'from-emerald-500 to-teal-600', badge: 'Prototype & Vision' },
+    { name: 'Seed', val: '$8M - $18M', dilution: '15-20%', founderOwn: '70-75%', arr: '$10k - $50k MRR', color: 'from-indigo-500 to-blue-600', badge: 'Early PMF' },
+    { name: 'Series A', val: '$35M - $80M', dilution: '15-22%', founderOwn: '55-60%', arr: '$1.5M - $3M ARR', color: 'from-amber-500 to-orange-600', badge: 'Repeatable GTM Engine' },
+    { name: 'Series B & C', val: '$100M - $500M+', dilution: '10-15%', founderOwn: '35-45%', arr: '$10M - $30M ARR', color: 'from-purple-500 to-violet-600', badge: 'Category Dominance' },
+    { name: 'IPO / Decacorn', val: '$1B - $10B+', dilution: 'Public Float', founderOwn: '15-25%', arr: '$100M+ ARR', color: 'from-rose-500 to-pink-600', badge: 'Generational Monopoly' },
+  ];
+
+  return (
+    <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+          <TrendingUp className="w-4 h-4 text-emerald-600" />
+          <span>Visual Diagram: VC Lifecycle, Valuation &amp; Ownership Waterfall</span>
+        </div>
+        <span className="text-[10px] font-mono text-slate-400">Stages 1 to 5</span>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 pt-1">
+        {stages.map((stg, idx) => (
+          <div key={idx} className="relative rounded-2xl p-3 bg-slate-50 border border-slate-200/80 flex flex-col justify-between hover:border-indigo-300 transition-colors">
+            <div className={`h-1.5 w-full rounded-full bg-gradient-to-r ${stg.color} mb-2`} />
+            <div>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">
+                {stg.badge}
+              </span>
+              <div className="text-xs font-extrabold font-heading text-slate-900 mt-1">
+                {stg.name}
+              </div>
+              <div className="text-[11px] font-mono text-emerald-700 font-bold mt-1">
+                {stg.val}
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] text-slate-600 space-y-0.5 font-sans">
+              <div>Dilution: <strong className="text-slate-900 font-mono">{stg.dilution}</strong></div>
+              <div>Founder Pool: <strong className="text-slate-900 font-mono">{stg.founderOwn}</strong></div>
+              <div className="text-indigo-600 font-semibold">{stg.arr}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- Visual Diagram 2: 10-Slide Pitch Deck Narrative Arc Flow ---
+function DeckNarrativeArcDiagram() {
+  const blocks = [
+    { phase: '1. The Spark & Hook', slides: 'Slides 1 - 3', title: 'Purpose, Hair-on-Fire Problem, Magic Demo', icon: Zap, color: 'border-emerald-300 bg-emerald-50/60 text-emerald-900' },
+    { phase: '2. Market & Defensibility', slides: 'Slides 4 - 6', title: 'Why Now?, Bottoms-up TAM, Proprietary Moat', icon: Compass, color: 'border-indigo-300 bg-indigo-50/60 text-indigo-900' },
+    { phase: '3. Execution Proof', slides: 'Slides 7 - 9', title: 'Traction Curves, GTM Engine, Elite Team', icon: TrendingUp, color: 'border-amber-300 bg-amber-50/60 text-amber-900' },
+    { phase: '4. The Rocket Fuel', slides: 'Slide 10', title: 'The Ask, Valuation Cap & 18-Mo Milestones', icon: Target, color: 'border-purple-300 bg-purple-50/60 text-purple-900' }
+  ];
+
+  return (
+    <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+          <Layers className="w-4 h-4 text-indigo-600" />
+          <span>Visual Diagram: The 10-Slide Pitch Narrative Arc</span>
+        </div>
+        <span className="text-[10px] font-mono text-slate-400">Logical Flow</span>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
+        {blocks.map((blk, idx) => {
+          const IconComponent = blk.icon;
+          return (
+            <div key={idx} className={`p-3.5 rounded-2xl border ${blk.color} relative flex flex-col justify-between`}>
+              <div>
+                <div className="flex items-center justify-between gap-1 mb-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider opacity-75">{blk.slides}</span>
+                  <IconComponent className="w-3.5 h-3.5" />
+                </div>
+                <div className="text-xs font-black font-heading mb-1">
+                  {blk.phase}
+                </div>
+                <p className="text-[11px] leading-relaxed opacity-90">
+                  {blk.title}
+                </p>
+              </div>
+              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold">
+                <span>Phase {idx + 1}</span>
+                <ArrowRight className="w-3 h-3 ml-auto opacity-60" />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// --- Visual Diagram 3: Warm Intro Hierarchy Pyramid ---
+function WarmIntroPyramidDiagram() {
+  return (
+    <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
+      <div className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+        <Users className="w-4 h-4 text-indigo-600" />
+        <span>Visual Diagram: The VC Outreach Hierarchy &amp; Conversion Rates</span>
+      </div>
+
+      <div className="space-y-2 pt-1 max-w-xl mx-auto">
+        {/* Tier 1 - Top */}
+        <div className="p-3.5 rounded-2xl bg-emerald-50 border-2 border-emerald-300 text-emerald-950 flex items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-xl bg-emerald-600 text-white font-black text-xs flex items-center justify-center">
+              1
+            </div>
+            <div>
+              <div className="font-extrabold text-xs">Portfolio Founders Backed by the VC</div>
+              <div className="text-[11px] text-emerald-800">Direct peer recommendation to lead general partner</div>
+            </div>
+          </div>
+          <span className="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-600 text-white shadow-2xs whitespace-nowrap">
+            90% Response
+          </span>
+        </div>
+
+        {/* Tier 2 - Mid */}
+        <div className="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-950 flex items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center">
+              2
+            </div>
+            <div>
+              <div className="font-extrabold text-xs">Respected Angel Investors, Scouts &amp; Seed GPs</div>
+              <div className="text-[11px] text-indigo-800">Warm introduction from early backers and co-investors</div>
+            </div>
+          </div>
+          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-600 text-white shadow-2xs whitespace-nowrap">
+            60% Response
+          </span>
+        </div>
+
+        {/* Tier 3 - Base */}
+        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-xl bg-slate-400 text-white font-black text-xs flex items-center justify-center">
+              3
+            </div>
+            <div>
+              <div className="font-extrabold text-xs">Direct Cold Email / Twitter DM (&lt;150 words + Traction)</div>
+              <div className="text-[11px] text-slate-500">Brevity, verifiable growth metrics, and 3-min Loom demo</div>
+            </div>
+          </div>
+          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-200 text-slate-700 whitespace-nowrap">
+            25-35% Response
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- Visual Diagram 4: 4-Week Synchronized Fundraising Sprint Timeline ---
+function FundraisingSprintTimelineDiagram() {
+  const weeks = [
+    { week: 'Week 1', title: 'The Launch & Warm Intro Blast', desc: 'Activate 40+ target VC intros concurrently. Send forwardable blurb. Schedule 1st round partner video calls in bulk.', color: 'border-emerald-300 bg-emerald-50/50' },
+    { week: 'Week 2', title: '1st & 2nd Round Partner Pitches', desc: 'Hold 20-30 partner meetings. Open data room. Address diligence requests within 12 hours to maintain momentum.', color: 'border-blue-300 bg-blue-50/50' },
+    { week: 'Week 3', title: 'Full Partner Meeting & All-Hands', desc: 'Present to full investment committees. Early term sheets land. Leverage competing interest to accelerate decision timelines.', color: 'border-amber-300 bg-amber-50/50' },
+    { week: 'Week 4', title: 'Term Sheet Selection & Close', desc: 'Negotiate clean 1x non-participating terms. Select lead partner. Sign SAFE / priced docs and wire funds.', color: 'border-purple-300 bg-purple-50/50' }
+  ];
+
+  return (
+    <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
+      <div className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+        <Clock className="w-4 h-4 text-amber-600" />
+        <span>Visual Diagram: The 4-Week Synchronized Fundraising Sprint</span>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
+        {weeks.map((w, idx) => (
+          <div key={idx} className={`p-3.5 rounded-2xl border ${w.color} space-y-1.5`}>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black font-mono text-indigo-700">{w.week}</span>
+              <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+            </div>
+            <div className="text-xs font-bold font-heading text-slate-900">{w.title}</div>
+            <p className="text-[11px] text-slate-600 leading-relaxed pt-0.5">{w.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- Visual Diagram 5: Term Sheet Red Flags vs Clean Terms Matrix ---
+function TermSheetComparisonMatrixDiagram() {
+  const clauses = [
+    { item: 'Liquidation Preference', red: 'Participating Preferred ("Double Dipping")', clean: '1x Non-Participating Preferred', why: 'Protects founder upside on $100M+ exits' },
+    { item: 'Option Pool Shuffle', red: '15-20% Pre-Money (Dilutes Founders Only)', clean: '7-10% Post-Money or Real 12-Mo Need', why: 'Prevents 10%+ unneeded founder dilution' },
+    { item: 'Board Composition', red: 'Investor Majority / Blocking Vetoes at Seed', clean: '2 Founders + 1 Investor (Founder Majority)', why: 'Maintains mission and product control' },
+    { item: 'Pro-Rata Rights', red: 'Super Pro-Rata (Right to expand ownership)', clean: 'Standard Pro-Rata for Major Investors', why: 'Leaves room for future Series A lead funds' }
+  ];
+
+  return (
+    <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
+      <div className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+        <Scale className="w-4 h-4 text-indigo-600" />
+        <span>Visual Diagram: Toxic Red Flags vs. Founder-Friendly Terms</span>
+      </div>
+
+      <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+        <table className="w-full text-left text-xs border-collapse">
+          <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-[10px] border-b border-slate-200">
+            <tr>
+              <th className="py-2.5 px-3">Term Clause</th>
+              <th className="py-2.5 px-3 text-rose-700 bg-rose-50/50">⚠️ Toxic Red Flag</th>
+              <th className="py-2.5 px-3 text-emerald-700 bg-emerald-50/50">✅ Founder-Friendly Standard</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 text-[11px]">
+            {clauses.map((c, idx) => (
+              <tr key={idx} className="hover:bg-slate-50/50">
+                <td className="py-2.5 px-3 font-bold text-slate-900">{c.item}</td>
+                <td className="py-2.5 px-3 text-rose-700 font-medium bg-rose-50/30">{c.red}</td>
+                <td className="py-2.5 px-3 text-emerald-800 font-bold bg-emerald-50/30">{c.clean}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
 export default function FundraisingGuideModal({ isOpen, onClose }) {
   const [activeMainTab, setActiveMainTab] = useState('playbook'); // 'playbook' | 'templates' | 'calculator'
@@ -33,7 +270,6 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
 
   // Calculator State
   const [quizAnswers, setQuizAnswers] = useState({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
   if (!isOpen) return null;
 
@@ -83,11 +319,11 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
                   Founder Playbook: How to Raise VC &amp; Scale
                 </h3>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">
-                  Full Masterclass
+                  Visual Masterclass
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                End-to-end blueprint for pitching Tier 1 VCs, term sheet negotiation, warm intros, and deck structure
+                Visual frameworks, pitch deck blueprints, warm intro hierarchies, and term sheet defense
               </p>
             </div>
           </div>
@@ -113,7 +349,7 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
             }`}
           >
             <Compass className="w-4 h-4" />
-            <span>1. Complete Playbook (5 Chapters)</span>
+            <span>1. Visual Playbook (5 Chapters)</span>
           </button>
 
           <button
@@ -125,7 +361,7 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
             }`}
           >
             <Mail className="w-4 h-4" />
-            <span>2. Copy-Paste Email Scripts &amp; Templates</span>
+            <span>2. Copy-Paste Email Scripts</span>
           </button>
 
           <button
@@ -137,7 +373,7 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
             }`}
           >
             <Calculator className="w-4 h-4" />
-            <span>3. Fundraising Readiness Calculator</span>
+            <span>3. Readiness Calculator</span>
           </button>
         </div>
 
@@ -148,7 +384,7 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
               {/* Left Sidebar Chapter List */}
               <div className="md:col-span-4 space-y-2">
                 <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                  Playbook Chapters
+                  Interactive Chapters
                 </div>
                 {FUNDRAISING_CHAPTERS.map((ch) => {
                   const isSelected = ch.id === selectedChapterId;
@@ -185,14 +421,17 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
                   <p className="text-xs text-slate-500 mt-1">
                     {currentChapter.subtitle}
                   </p>
-                  <div className="mt-3 p-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 font-medium leading-relaxed">
-                    💡 <strong>Executive Summary:</strong> {currentChapter.content.overview}
+                  <div className="mt-3 p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-700 font-medium leading-relaxed shadow-2xs">
+                    💡 <strong>Executive Thesis:</strong> {currentChapter.content.overview}
                   </div>
                 </div>
 
-                {/* Chapter 1: Benchmarks */}
+                {/* Chapter 1: Benchmarks + Visual Lifecycle Waterfall */}
                 {currentChapter.id === 'stage-readiness' && (
-                  <div className="space-y-5">
+                  <div className="space-y-6">
+                    {/* Visual Diagram: Lifecycle Waterfall */}
+                    <LifecycleWaterfallDiagram />
+
                     <div className="space-y-3">
                       <div className="text-xs font-bold uppercase tracking-wider text-slate-900">
                         Fundraising Valuation &amp; Metric Benchmarks
@@ -238,39 +477,47 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
                   </div>
                 )}
 
-                {/* Chapter 2: 10-Slide Deck */}
+                {/* Chapter 2: 10-Slide Deck + Narrative Arc Diagram */}
                 {currentChapter.id === 'pitch-deck' && (
-                  <div className="space-y-4">
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-                      <Layers className="w-4 h-4 text-indigo-600" /> The Ideal 10-Slide Pitch Deck Framework
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {currentChapter.content.slides.map((slide, idx) => (
-                        <div key={idx} className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-lg bg-indigo-600 text-white font-mono text-xs font-black flex items-center justify-center">
-                              {slide.number}
-                            </span>
-                            <span className="font-bold text-xs text-slate-900 truncate">
-                              {slide.title}
-                            </span>
+                  <div className="space-y-6">
+                    {/* Visual Diagram: Narrative Arc */}
+                    <DeckNarrativeArcDiagram />
+
+                    <div className="space-y-4">
+                      <div className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                        <Layers className="w-4 h-4 text-indigo-600" /> Slide-by-Slide Breakdown
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {currentChapter.content.slides.map((slide, idx) => (
+                          <div key={idx} className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="w-6 h-6 rounded-lg bg-indigo-600 text-white font-mono text-xs font-black flex items-center justify-center">
+                                {slide.number}
+                              </span>
+                              <span className="font-bold text-xs text-slate-900 truncate">
+                                {slide.title}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-600 leading-relaxed pt-1">
+                              {slide.description}
+                            </p>
                           </div>
-                          <p className="text-[11px] text-slate-600 leading-relaxed pt-1">
-                            {slide.description}
-                          </p>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
 
-                {/* Chapter 3: Warm Intros */}
+                {/* Chapter 3: Warm Intros + Hierarchy Pyramid Diagram */}
                 {currentChapter.id === 'networking-intros' && (
-                  <div className="space-y-4">
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-900">
-                      The Outreach Hierarchy for Tier 1 VCs
-                    </div>
+                  <div className="space-y-6">
+                    {/* Visual Diagram: Intro Hierarchy Pyramid */}
+                    <WarmIntroPyramidDiagram />
+
                     <div className="space-y-3">
+                      <div className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                        Detailed Warm Intro Playbook
+                      </div>
                       {currentChapter.content.strategies.map((strat, idx) => (
                         <div key={idx} className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-1.5">
                           <div className="flex items-center justify-between gap-2">
@@ -288,13 +535,19 @@ export default function FundraisingGuideModal({ isOpen, onClose }) {
                   </div>
                 )}
 
-                {/* Chapter 4: Term Sheets & Red Flags */}
+                {/* Chapter 4: Term Sheets + Sprint Timeline + Red Flags Matrix */}
                 {currentChapter.id === 'pitching-negotiation' && (
-                  <div className="space-y-4">
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-                      <AlertTriangle className="w-4 h-4 text-rose-600" /> Critical Term Sheet Red Flags to Negotiate Out
-                    </div>
+                  <div className="space-y-6">
+                    {/* Visual Diagram: 4-Week Sprint Timeline */}
+                    <FundraisingSprintTimelineDiagram />
+
+                    {/* Visual Diagram: Red Flags Matrix */}
+                    <TermSheetComparisonMatrixDiagram />
+
                     <div className="space-y-3">
+                      <div className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                        <AlertTriangle className="w-4 h-4 text-rose-600" /> Deep-Dive Clause Hazards
+                      </div>
                       {currentChapter.content.redFlags.map((flag, idx) => (
                         <div key={idx} className="p-4 rounded-2xl bg-white border border-rose-200/80 shadow-2xs space-y-1.5">
                           <div className="flex items-center justify-between gap-2">
