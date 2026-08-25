@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Download, Star, LayoutGrid, Table, BarChart3, Scale, Layers, Globe, Filter, X, Mail, Sparkles, LogOut, UserCheck, ShieldAlert } from 'lucide-react';
+import { Search, Download, Star, LayoutGrid, Table, BarChart3, Scale, Layers, Globe, Filter, X, Mail, Sparkles, LogOut, UserCheck, ShieldAlert, BookOpen, GraduationCap, Compass } from 'lucide-react';
 import { PRESTIGE_TIERS, REGIONS, INVESTMENT_STAGES, SECTORS } from '../data/vcFunds';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogo } from './AuthModal';
@@ -24,6 +24,7 @@ export default function Header({
   favoritesCount,
   comparedFundsCount,
   onOpenCompare,
+  onOpenGuide,
   totalFunds,
   filteredCount,
   onExportJson,
@@ -57,6 +58,13 @@ export default function Header({
     });
   };
 
+  const handleOpenGuideClick = (e) => {
+    requireAuth(e, () => onOpenGuide(), {
+      title: 'Sign In to Access Founder Playbook',
+      message: 'Please sign in or register with Google to unlock the complete 5-chapter Masterclass on Pitching VCs, Term Sheets, and Pitch Decks.'
+    });
+  };
+
   return (
     <header className="relative border-b border-slate-200 bg-white/95 backdrop-blur-xl sticky top-0 z-30 shadow-xs">
       {/* Top highlight gradient line */}
@@ -87,8 +95,21 @@ export default function Header({
             </div>
           </div>
 
-          {/* Quick Actions / Compare / Target List / Export / User Auth / Admin */}
+          {/* Quick Actions / Compare / Guide / Target List / Export / User Auth / Admin */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+            {/* Founder Fundraising Masterclass Guide Button */}
+            <button
+              onClick={handleOpenGuideClick}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-sm transition-all cursor-pointer ring-2 ring-indigo-500/20 hover:scale-[1.02] group"
+              title="Founder Playbook: How to Raise VC & Build a Successful Startup"
+            >
+              <GraduationCap className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform" />
+              <span>How to Raise Funding (Playbook)</span>
+              <span className="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px] font-mono text-white">
+                New
+              </span>
+            </button>
+
             {/* Admin Dashboard Pill for kalyanjit@gmail.com */}
             {isAdmin && (
               <button
@@ -246,6 +267,18 @@ export default function Header({
                           <UserCheck className="w-3 h-3" /> Verified Google Account
                         </div>
                       </div>
+
+                      {/* Founder Playbook in Dropdown */}
+                      <button
+                        onClick={() => {
+                          setUserDropdownOpen(false);
+                          onOpenGuide();
+                        }}
+                        className="w-full px-3.5 py-2 text-left text-xs font-bold text-indigo-700 hover:bg-indigo-50 flex items-center gap-2 transition-colors cursor-pointer border-b border-slate-100"
+                      >
+                        <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+                        <span>How to Raise Funding Guide</span>
+                      </button>
 
                       {/* Admin Panel Direct Action in Dropdown */}
                       {isAdmin && (

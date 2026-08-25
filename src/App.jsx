@@ -9,6 +9,7 @@ import AnalyticsView from './components/AnalyticsView';
 import ContactModal from './components/ContactModal';
 import AuthModal from './components/AuthModal';
 import AdminModal from './components/AdminModal';
+import FundraisingGuideModal from './components/FundraisingGuideModal';
 import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { VC_FUNDS } from './data/vcFunds';
@@ -81,6 +82,7 @@ function MainApp() {
   const [comparedFunds, setComparedFunds] = useState([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Favorites state persisted in localStorage
@@ -144,9 +146,14 @@ function MainApp() {
       const queryParam = params.get('q');
       const tierParam = params.get('tier');
       const indiaParam = params.get('india');
+      const guideParam = params.get('guide') || params.get('playbook');
 
       if (indiaParam === 'true') {
         setIndiaFilterOnly(true);
+      }
+
+      if (guideParam === 'true') {
+        setIsGuideOpen(true);
       }
 
       if (fundSlug) {
@@ -219,7 +226,7 @@ function MainApp() {
       window.history.pushState({ fundId: fund.id }, '', `/fund/${slug}`);
       updateSEO({
         title: `${fund.name} (#${fund.rank} Global & India VC) | Top Venture Capital Funds Directory`,
-        description: `${fund.name} is ranked in the Global & India VC Index (${fund.tier}) with ${fund.aum} in AUM. Notable exits: ${fund.notableExits.slice(0, 4).join(', ')}.`,
+        description: `${fund.name} is ranked in the Global & India VC Index (${found?.tier || fund.tier}) with ${fund.aum} in AUM. Notable exits: ${fund.notableExits.slice(0, 4).join(', ')}.`,
         canonicalUrl: `${BASE_ORIGIN}/fund/${slug}`,
         fund: fund
       });
@@ -278,6 +285,16 @@ function MainApp() {
     }, {
       title: 'Sign In to Contact & Submit Updates',
       message: 'Sign in or register with Google to submit intelligence updates or message the editorial team.'
+    });
+  };
+
+  const handleOpenGuide = () => {
+    requireAuth(null, () => {
+      trackActivity('PLAYBOOK_VIEW', { source: 'user_action' });
+      setIsGuideOpen(true);
+    }, {
+      title: 'Sign In to Access Founder Playbook',
+      message: 'Sign in or register with Google to unlock the complete 5-chapter Masterclass on Pitching VCs, Term Sheets, and Pitch Decks.'
     });
   };
 
@@ -413,6 +430,7 @@ function MainApp() {
         favoritesCount={favorites.length}
         comparedFundsCount={comparedFunds.length}
         onOpenCompare={handleOpenCompare}
+        onOpenGuide={handleOpenGuide}
         totalFunds={VC_FUNDS.length}
         filteredCount={filteredFunds.length}
         onExportJson={handleExportJson}
@@ -504,6 +522,12 @@ function MainApp() {
         onClose={() => setIsContactOpen(false)}
       />
 
+      {/* Founder Masterclass & Fundraising Playbook Modal */}
+      <FundraisingGuideModal
+        isOpen={isGuideOpen}
+        onClose={() => setIsGuideOpen(false)}
+      />
+
       {/* Google Authentication & Registration Modal */}
       <AuthModal />
 
@@ -525,7 +549,10 @@ function MainApp() {
       )}
 
       {/* Footer */}
-      <Footer onOpenContact={handleOpenContact} />
+      <Footer
+        onOpenContact={handleOpenContact}
+        onOpenGuide={handleOpenGuide}
+      />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Mail, ExternalLink, ShieldAlert, Globe, Award, TrendingUp, Layers, Users, MessageSquare } from 'lucide-react';
+import { Mail, ExternalLink, ShieldAlert, Globe, Award, TrendingUp, Layers, Users, MessageSquare, GraduationCap } from 'lucide-react';
 import { LinkedInIcon } from './Icons';
 
-export default function Footer({ onOpenContact }) {
+export default function Footer({ onOpenContact, onOpenGuide }) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -92,8 +92,17 @@ export default function Footer({ onOpenContact }) {
             <ul className="space-y-2 text-xs">
               <li>
                 <button
+                  onClick={onOpenGuide}
+                  className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-left cursor-pointer font-bold text-indigo-600 hover:underline"
+                >
+                  <GraduationCap className="w-4 h-4 text-indigo-600" />
+                  <span>How to Raise Funding (Playbook)</span>
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={onOpenContact}
-                  className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-left cursor-pointer font-bold text-slate-900 hover:underline"
+                  className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-left cursor-pointer font-semibold text-slate-800 hover:underline"
                 >
                   <Mail className="w-3.5 h-3.5 text-indigo-600" />
                   <span>Contact Us</span>
@@ -124,7 +133,7 @@ export default function Footer({ onOpenContact }) {
               <li>
                 <button
                   onClick={onOpenContact}
-                  className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-left cursor-pointer"
+                  className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-left cursor-pointer text-slate-500"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
                   <span>Suggest VC Profile Update</span>
@@ -197,6 +206,14 @@ export default function Footer({ onOpenContact }) {
           </div>
 
           <div className="flex items-center gap-3 text-slate-500 flex-wrap justify-center sm:justify-end">
+            <button
+              onClick={onOpenGuide}
+              className="hover:text-indigo-600 transition-colors flex items-center gap-1 cursor-pointer font-bold text-indigo-600"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Founder Playbook</span>
+            </button>
+            <span>•</span>
             <button
               onClick={onOpenContact}
               className="hover:text-indigo-600 transition-colors flex items-center gap-1 cursor-pointer font-medium"
