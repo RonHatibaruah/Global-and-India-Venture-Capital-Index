@@ -1,7 +1,7 @@
 # Global & India Venture Capital (VC) Index — Complete Social Media Launch Kit
 
 > **Goal:** Maximize organic reach and engagement across founders, startup operators, angel investors, and accelerators seeking fundraising intelligence, mentorship, and investor targeting.
-> **Curator:** Ron Hatibaruah ([LinkedIn Profile](https://www.linkedin.com/in/ronhatibaruah/))
+> **Curators:** Ron Hatibaruah ([LinkedIn Profile](https://www.linkedin.com/in/ronhatibaruah/)) & Kalyanjit Hatibaruah ([LinkedIn Profile](https://www.linkedin.com/in/kalyanjit))
 > **Repository:** [Global-and-India-Venture-Capital-Index](https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index)
 
 ---
@@ -194,7 +194,7 @@ If anyone in the cohort is actively fundraising or building their investor targe
 • Compare funds side-by-side & export target list to CSV
 
 🔗 *Repository:* https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index
-Curated by: Ron Hatibaruah (https://www.linkedin.com/in/ronhatibaruah/)
+Curated by: Ron Hatibaruah (https://www.linkedin.com/in/ronhatibaruah/) & Kalyanjit Hatibaruah (https://www.linkedin.com/in/kalyanjit)
 ```
 
 ---

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, ExternalLink, ShieldAlert, Globe, Award, TrendingUp, Layers, UserCheck } from 'lucide-react';
+import { Mail, ExternalLink, ShieldAlert, Globe, Award, TrendingUp, Layers, Users } from 'lucide-react';
 import { LinkedInIcon } from './Icons';
 
 export default function Footer({ onOpenContact }) {
@@ -30,24 +30,36 @@ export default function Footer({ onOpenContact }) {
               An independent, comprehensive ranking of the world's most prestigious Venture Capital firms and India-dedicated funds, categorized by Assets Under Management (AUM), historical DPI/IRR returns, investment stages, and generation-defining tech exits.
             </p>
 
-            {/* Curator Badge & LinkedIn Link */}
-            <div className="pt-2 flex items-center gap-3 flex-wrap">
-              <a
-                href="https://www.linkedin.com/in/ronhatibaruah/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200 transition-all shadow-2xs group cursor-pointer"
-                title="Connect with Ron Hatibaruah on LinkedIn"
-              >
-                <LinkedInIcon className="w-3.5 h-3.5 group-hover:text-white text-blue-600" />
-                <span>Curated by <strong>Ron Hatibaruah</strong></span>
-                <ExternalLink className="w-3 h-3 opacity-60 ml-0.5" />
-              </a>
+            {/* Curators Badges & LinkedIn Links */}
+            <div className="pt-2 space-y-2">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-indigo-600" /> Curated By
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <a
+                  href="https://www.linkedin.com/in/ronhatibaruah/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200 transition-all shadow-2xs group cursor-pointer"
+                  title="Connect with Ron Hatibaruah on LinkedIn"
+                >
+                  <LinkedInIcon className="w-3.5 h-3.5 group-hover:text-white text-blue-600" />
+                  <span><strong>Ron Hatibaruah</strong></span>
+                  <ExternalLink className="w-3 h-3 opacity-60 ml-0.5" />
+                </a>
 
-              <span className="flex items-center gap-1.5 text-xs text-slate-500">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Verified Database</span>
-              </span>
+                <a
+                  href="https://www.linkedin.com/in/kalyanjit"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200 transition-all shadow-2xs group cursor-pointer"
+                  title="Connect with Kalyanjit Hatibaruah on LinkedIn"
+                >
+                  <LinkedInIcon className="w-3.5 h-3.5 group-hover:text-white text-blue-600" />
+                  <span><strong>Kalyanjit Hatibaruah</strong></span>
+                  <ExternalLink className="w-3 h-3 opacity-60 ml-0.5" />
+                </a>
+              </div>
             </div>
           </div>
 
@@ -86,7 +98,18 @@ export default function Footer({ onOpenContact }) {
                   className="hover:text-blue-600 transition-colors flex items-center gap-1.5"
                 >
                   <LinkedInIcon className="w-3.5 h-3.5 text-blue-600" />
-                  <span>LinkedIn Profile</span>
+                  <span>Ron Hatibaruah (LinkedIn)</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/in/kalyanjit"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600 transition-colors flex items-center gap-1.5"
+                >
+                  <LinkedInIcon className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Kalyanjit Hatibaruah (LinkedIn)</span>
                 </a>
               </li>
               <li>
@@ -151,11 +174,20 @@ export default function Footer({ onOpenContact }) {
               className="text-indigo-600 hover:text-indigo-800 font-semibold hover:underline"
             >
               Ron Hatibaruah
+            </a>{' '}
+            &amp;{' '}
+            <a
+              href="https://www.linkedin.com/in/kalyanjit"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-600 hover:text-indigo-800 font-semibold hover:underline"
+            >
+              Kalyanjit Hatibaruah
             </a>
             . All rights reserved.
           </div>
 
-          <div className="flex items-center gap-4 text-slate-500">
+          <div className="flex items-center gap-3 text-slate-500 flex-wrap justify-center sm:justify-end">
             <a
               href="https://www.linkedin.com/in/ronhatibaruah/"
               target="_blank"
@@ -164,6 +196,16 @@ export default function Footer({ onOpenContact }) {
             >
               <LinkedInIcon className="w-3.5 h-3.5 text-blue-600" />
               <span>Ron Hatibaruah</span>
+            </a>
+            <span>•</span>
+            <a
+              href="https://www.linkedin.com/in/kalyanjit"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+            >
+              <LinkedInIcon className="w-3.5 h-3.5 text-blue-600" />
+              <span>Kalyanjit Hatibaruah</span>
             </a>
             <span>•</span>
             <span>Bengaluru • Silicon Valley • Global Hubs</span>
