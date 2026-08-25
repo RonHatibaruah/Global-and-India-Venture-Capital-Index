@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, ExternalLink, ShieldAlert, Globe, Award, TrendingUp, Layers, Users } from 'lucide-react';
+import { Mail, ExternalLink, ShieldAlert, Globe, Award, TrendingUp, Layers, Users, MessageSquare } from 'lucide-react';
 import { LinkedInIcon } from './Icons';
 
 export default function Footer({ onOpenContact }) {
@@ -91,6 +91,15 @@ export default function Footer({ onOpenContact }) {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
+                <button
+                  onClick={onOpenContact}
+                  className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-left cursor-pointer font-bold text-slate-900 hover:underline"
+                >
+                  <Mail className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Contact Us</span>
+                </button>
+              </li>
+              <li>
                 <a
                   href="https://www.linkedin.com/in/ronhatibaruah/"
                   target="_blank"
@@ -117,8 +126,8 @@ export default function Footer({ onOpenContact }) {
                   onClick={onOpenContact}
                   className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-left cursor-pointer"
                 >
-                  <Mail className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>Submit VC Profile Update</span>
+                  <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Suggest VC Profile Update</span>
                 </button>
               </li>
               <li>
@@ -188,6 +197,14 @@ export default function Footer({ onOpenContact }) {
           </div>
 
           <div className="flex items-center gap-3 text-slate-500 flex-wrap justify-center sm:justify-end">
+            <button
+              onClick={onOpenContact}
+              className="hover:text-indigo-600 transition-colors flex items-center gap-1 cursor-pointer font-medium"
+            >
+              <Mail className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Contact Us</span>
+            </button>
+            <span>•</span>
             <a
               href="https://www.linkedin.com/in/ronhatibaruah/"
               target="_blank"
