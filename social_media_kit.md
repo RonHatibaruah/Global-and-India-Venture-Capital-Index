@@ -1,208 +1,205 @@
-# Global & India Venture Capital (VC) Index — Complete Social Media Launch Kit
+# 🚀 Global & India Venture Capital Index — Multi-Platform Social Media Launch Kit
 
-> **Goal:** Maximize organic reach and engagement across founders, startup operators, angel investors, and accelerators seeking fundraising intelligence, mentorship, and investor targeting.
-> **Curators:** Ron Hatibaruah ([LinkedIn Profile](https://www.linkedin.com/in/ronhatibaruah/)) & Kalyanjit Hatibaruah ([LinkedIn Profile](https://www.linkedin.com/in/kalyanjit))
-> **Repository:** [Global-and-India-Venture-Capital-Index](https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index)
+> **Curated by:** [Ron Hatibaruah](https://www.linkedin.com/in/ronhatibaruah/) & [Kalyanjit Hatibaruah](https://www.linkedin.com/in/kalyanjit)  
+> **Platform Live URL:** `https://topvc.flugelsoft.com` (or your chosen custom domain)
 
 ---
 
-## 1. LinkedIn Posts
+## 1. 💼 LinkedIn Post (Founder & Investor Community Launch)
 
-### Option A: Authoritative / Data-Driven Announcement (Recommended)
-```text
-Founders often ask: "Which VCs should I pitch for my round?"
+```markdown
+🚀 Over 80% of founders waste 6+ months pitching the wrong VC funds, at the wrong stage, with the wrong check size.
 
-The truth is, not all VC firms are built the same. Pitching a multi-stage late growth giant for a $300k pre-seed round or approaching a seed fund for a $20M Series B wastes months of crucial runway.
+To solve this, Ron Hatibaruah and I (Kalyanjit Hatibaruah) spent months mapping out the complete institutional investment ecosystem and have officially launched the:
 
-To solve this, I’ve put together the Global & India Venture Capital (VC) Index — an open, categorized database ranking the world's most prestigious VC funds across AUM ($1.05T+ tracked), investment stages, prestige tiers, and decacorn track records.
+🌟 Global & India Venture Capital (VC) Index + Founder Fundraising Masterclass
 
-Here is what’s inside:
+👉 Live Platform: https://topvc.flugelsoft.com
 
-📊 6 Market Prestige Tiers:
-• Tier 1: Elite Sovereigns (Sequoia, a16z, Benchmark, Founders Fund, Accel, Kleiner Perkins, Bessemer)
-• Tier 2: Multi-Stage Giants (Insight Partners, Khosla, Thrive, Tiger Global, NEA, WestBridge)
-• Tier 3: Early-Stage Champions (First Round, Blume, Initialized, Elevation, SV Angel, Stellaris)
-• Tier 4: Deep Tech & Frontier (Lux Capital, Speciale Invest, DCVC, Flagship Pioneering)
-• Tier 5: Corporate Strategic VCs (GV / Google Ventures, Salesforce Ventures, Qualcomm Ventures)
-• Tier 6: Global & Regional Powerhouses (Peak XV, Balderton, Atomico, Kaszek, Creandum)
+Here is what we built for early-stage & growth founders:
 
-🇮🇳 Dedicated India & South Asia Section (50+ Active Funds):
-From seed champions (Blume, 3one4, India Quotient, Titan Capital, Together Fund) to scale platforms (Peak XV, Accel India, Elevation, Matrix Partners/Z47, ChrysCapital, PremjiInvest).
+1️⃣ 50+ Top Venture Capital Funds (Global Tier-1s & India Titans):
+• Ranked by Assets Under Management (AUM), Prestige Tiers (S-Tier to Tier-4), and Decacorn track records.
+• Funds analyzed include Peak XV Partners, Accel India, Elevation Capital, Nexus Venture Partners, Matrix Partners India (Z47), Blume Ventures, Kalaari, Chiratae, WestBridge, PremjiInvest, and more.
+• Key partner contacts, check sizes ($100k angel checks to $100M+ growth tickets), and historical generation-defining exits (Zomato, Swiggy, Flipkart, Razorpay, Zepto, Nykaa).
 
-⚡ Core Features for Founders:
-✅ Side-by-Side Fund Comparison (Compare AUM, stages, check sizes)
-✅ Unified Search by Unicorn Exits (Search "OpenAI", "Zomato", "Swiggy", "Postman", "Razorpay")
-✅ 1-Click Target List Export (Download custom investor pipeline to CSV/JSON)
+2️⃣ Interactive Founder Playbook & Masterclass:
+• 📊 Visual VC Lifecycle & Dilution Waterfall (Pre-seed to IPO).
+• 📑 The Irresistible 10-Slide Pitch Deck Framework with slide-by-slide narrative arc.
+• 🔺 The Warm Intro Hierarchy (How to get into Tier-1 partner inboxes with a 90% response rate).
+• ⚠️ Term Sheet Red Flags (Participating preferred vs. non-participating, option pool shuffle, board composition).
+• 📋 Copy-Paste Email Templates (Forwardable intro blurb, cold partner email, monthly investor updates).
+• 🧮 Interactive Fundraising Readiness Diagnostic Calculator.
 
-Check it out and build your fundraising target list:
-👉 https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index
+3️⃣ Power Tools for Startup Teams:
+• ⚖️ Side-by-Side Fund Comparison Matrix.
+• 📥 Instant CSV/JSON Export for your CRM pipeline.
+• 🇮🇳 1-Click India-Active Fund Filter.
 
-Let me know in the comments: Which VC fund has been the most founder-friendly in your journey?
+If you are a founder preparing to raise in 2026, an angel investor, or an operator looking for market intelligence, this was built for you.
 
-#VentureCapital #Startups #Fundraising #Founders #AngelInvesting #IndiaStartups #Tech #SaaS #AI
+Check it out, bookmark your target investor list, and let us know what you think in the comments! 👇
+
+🔗 Platform: https://topvc.flugelsoft.com
+🔗 Connect with Ron: https://www.linkedin.com/in/ronhatibaruah/
+🔗 Connect with Kalyanjit: https://www.linkedin.com/in/kalyanjit
+
+#VentureCapital #Startups #Fundraising #IndiaStartups #Founders #TechEcosystem #SeedFunding #SeriesA #Entrepreneurship
 ```
 
 ---
 
-### Option B: Story-Driven / Founder-Empathy Post
-```text
-Fundraising is one of the hardest parts of being a founder.
-
-You build an MVP, find early PMF, and then face the daunting task of building an investor target list from scratch with outdated spreadsheets and broken links.
-
-I wanted to make this process 10x faster and transparent for every founder building in 2026.
-
-I built the Global & India Venture Capital Index — an open-source platform cataloging $1.05 Trillion+ in venture capital deployment.
-
-Whether you're building:
-🚀 Frontier AI & DeepTech in Silicon Valley
-📱 Consumer & Quick Commerce in Bengaluru / Mumbai
-☁️ B2B SaaS for Global Enterprise
-
-You can instantly filter funds by check size ($100k seed checks to $100M+ growth lead rounds), partner names, active unicorn portfolio, and tier rankings.
-
-Explore the database here: https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index
-
-Feel free to share this with any founder currently in the trenches fundraising!
-
-#Startups #VentureCapital #Entrepreneurship #Founders #TechFunding
-```
-
----
-
-## 2. Twitter / X Viral Launch Thread
+## 2. 🐦 Twitter / X (Viral Launch Thread)
 
 ### Tweet 1 (Hook):
-```text
-The global venture capital landscape manages over $1,000,000,000,000+ ($1T) in capital.
+```markdown
+Most founders waste 200+ hours pitching VCs who don't even invest in their sector, stage, or geography.
 
-Yet, 90% of founders pitch the wrong VCs at the wrong stage.
+So @RonHatibaruah & @kalyanjit built the definitive Global & India Venture Capital Index + Founder Playbook.
 
-We just compiled the ultimate Global & India Venture Capital Index — categorized by Prestige Tier, AUM, Check Sizes & Unicorn Track Record.
+50+ top funds, partner contacts, check sizes, and an end-to-end fundraising masterclass.
 
-Here is the breakdown 🧵👇
+🧵👇
 ```
 
-### Tweet 2 (Tiers 1 & 2):
-```text
-1/ 🏛️ Tier 1: Elite Sovereigns & Multi-Stage Giants
-These funds define market pricing and back generation-defining monopolies:
-• Sequoia Capital ($85B AUM) - Apple, Google, Airbnb, Stripe, OpenAI
-• a16z ($44B AUM) - Facebook, Coinbase, Figma, Anduril
-• Benchmark ($4B AUM) - Uber, Twitter, Instagram, Cerebras
-• Founders Fund ($12B AUM) - SpaceX, Palantir, Neuralink
+### Tweet 2 (The Data & Database):
+```markdown
+1/ The Database 📊
+
+Every major global & India fund mapped out:
+• Peak XV, Accel, Elevation, Nexus, Matrix (Z47), Blume, WestBridge, PremjiInvest
+• Filter by: AUM, Prestige Tier (S-Tier to Tier-4), Check Size, HQ & Sectors
+• Track records: Unicorn exits & active decacorns
+
+1-click export to CSV for your CRM.
 ```
 
-### Tweet 3 (India Powerhouses):
-```text
-2/ 🇮🇳 Top India & South Asia Powerhouses
-India's venture ecosystem is surging with world-class funds:
-• Peak XV Partners ($9.2B AUM) - Zomato, Razorpay, Groww
-• Accel India ($3.5B AUM) - Flipkart, Freshworks, Swiggy
-• Elevation Capital ($3.0B AUM) - Paytm, MakeMyTrip, Meesho
-• Nexus Venture Partners ($2.6B AUM) - Postman, Hasura, Zepto
+### Tweet 3 (The Visual Playbook):
+```markdown
+2/ Visual Founder Playbook 🎓
+
+Built-in frameworks for raising capital:
+• VC Lifecycle & Dilution Waterfall ($2.5M Pre-seed ➔ $80M Series A)
+• 10-Slide Pitch Deck blueprint (Slide-by-slide teardown)
+• Warm Intro Pyramid (Why PortCo founder intros convert at 90%)
+• 4-Week Synchronized Sprint Timeline
 ```
 
-### Tweet 4 (Seed & DeepTech Champions):
-```text
-3/ 🔬 Seed Champions & Deep Tech Specialists
-For Day Zero and frontier science:
-• Blume Ventures ($600M AUM) - Purplle, Pixxel, Ultrahuman
-• First Round Capital ($2.5B AUM) - Uber, Notion, Ramp
-• Lux Capital ($5.0B AUM) - Hugging Face, Runway, Anduril
-• Speciale Invest ($120M AUM) - Agnikul Cosmos, GalaxEye
+### Tweet 4 (Term Sheet Defense & Email Templates):
+```markdown
+3/ Term Sheet Red Flags & Copy-Paste Scripts 📋
+
+• Avoid the Option Pool Shuffle & Participating Preferred traps.
+• Copy-paste scripts: Forwardable Intro Blurb, Cold Partner Email (<150 words), and Monthly Investor Updates.
+• Interactive 4-question Fundraising Readiness Calculator.
 ```
 
-### Tweet 5 (Call to Action / Link):
-```text
-4/ 🛠️ Interactive Features built for Founders:
-• Side-by-side fund comparison matrix
-• Filter by stage: Pre-Seed, Series A/B, Growth, DeepTech
-• Export customized investor CRM pipelines to CSV/JSON
+### Tweet 5 (Call to Action):
+```markdown
+4/ Explore the platform for free today:
 
-Explore the complete index:
-👉 https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index
+🔗 https://topvc.flugelsoft.com
 
-RT if you're building or fundraising in tech! 🚀
+Curated by @RonHatibaruah & @kalyanjit.
+
+If this helps your fundraising journey, RT the first tweet to help other founders raise faster! 🚀
 ```
 
 ---
 
-## 3. Hacker News (Show HN Post)
+## 3. 🌐 Hacker News (Show HN)
 
-**Title:** `Show HN: Global and India Venture Capital Index – 50+ Top Funds Ranked by AUM & Exits`
+```markdown
+Title: Show HN: Global & India Venture Capital Index with Interactive Founder Playbook
 
-**Text Content:**
-```text
+Link: https://topvc.flugelsoft.com
+
 Hi HN,
 
-When preparing for fundraising, founders spend weeks scraping fragmented investor lists, guessing check sizes, or applying to funds whose mandates don't match their current stage.
+We built the Global & India Venture Capital Index to bring transparency to early-stage & growth fundraising: https://topvc.flugelsoft.com
 
-I built the Global and India Venture Capital Index as an open, high-density intelligence directory.
+Why we built this:
+Founders spend months building investor target lists from scratch, often relying on outdated spreadsheets or expensive paywalled databases. We wanted to create an open, curated intelligence hub specifically covering top Global and India-focused venture capital funds, complete with partner names, check sizes, prestige tiers, and active portfolio decacorns.
 
-What it tracks:
-- 50+ Top Global & India VC funds categorized across 6 Prestige Tiers.
-- $1.05T+ in tracked aggregate Assets Under Management (AUM).
-- Verified portfolio track records (e.g. OpenAI, Stripe, SpaceX, Zomato, Postman, Swiggy).
-- Key General Partners, typical check sizes ($100k seed to $100M+ growth), and office locations.
-- Tools: Side-by-side comparison matrix, table view with sorting, analytics charts, and 1-click CSV/JSON export for your CRM.
+Key Features:
+- 50+ Top VC Funds (Peak XV, Accel, Elevation, Nexus, Blume, WestBridge, etc.)
+- Multi-dimensional filtering by Sector, Stage, AUM, and India-active investments
+- Side-by-side fund comparison matrix & CSV/JSON pipeline export
+- Visual Founder Playbook: 10-slide pitch deck structure, dilution waterfall benchmarks, 4-week fundraising sprint timeline, and term sheet red flags breakdown
+- Copy-paste email scripts (Forwardable intro blurbs, monthly LP updates)
+- Built with React, Tailwind CSS, Vite, and Firebase
 
-Code & Database: https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index
-
-I’d love your feedback on additional metrics or funds you'd like to see indexed!
+We would love your feedback on the rankings, UI, and additional metrics you'd like to see!
 ```
 
 ---
 
-## 4. Reddit Posts (r/startups, r/venturecapital, r/entrepreneur)
+## 4. 💬 Reddit (r/startups, r/venturecapital, r/IndianStartups)
 
-**Title:** `I created a comprehensive directory of top 50+ Global & Indian VC funds (AUM, Check Sizes, Stage Focus, Exits) with 1-click CSV export for founders`
+```markdown
+Title: We mapped 50+ Top Global & India VC Funds + built a complete Visual Fundraising Playbook (Free Tool)
 
-**Body:**
-```text
 Hey everyone,
 
-One of the biggest bottlenecks for early-stage founders is building a targeted investor pipeline. Sending cold pitches to funds that only do Series C or don't invest in your sector burns time and yields low conversion.
+Fundraising is notoriously opaque. Knowing which partner leads which round, what traction benchmarks are expected at Seed vs Series A, and what term sheet red flags to watch out for can save founders months of agony.
 
-To help founders streamline their fundraising research, I mapped out the top global and Indian VC firms:
+My co-curator (Ron Hatibaruah) and I built a free directory and masterclass:
+👉 https://topvc.flugelsoft.com
 
-What's included in the index:
-1. Categorization by 6 Prestige Tiers (Elite Sovereigns, Multi-Stage Giants, Early-Stage Champions, Deep Tech, Corporate VCs, and Regional Powerhouses).
-2. Typical check sizes & stage focus (Pre-seed, Seed, Series A-B, Growth).
-3. Core sector alignment (AI/ML, B2B SaaS, Fintech, DeepTech/Space, Consumer, Climate).
-4. Historical generation-defining exits and active unicorn portfolio backing.
-5. Exportable to CSV / JSON so you can import directly into your fundraising Notion/Airtable/HubSpot CRM.
+What's inside:
+1. Curated VC Index: 50+ leading venture firms with active India and global investments (Peak XV, Accel India, Elevation, Nexus, Matrix India/Z47, Blume, Kalaari, WestBridge, etc.) with AUM, stage, check sizes ($100k to $100M+), and key partners.
+2. Visual Founder Playbook:
+   - VC Lifecycle & Dilution waterfall from Pre-Seed to IPO
+   - The 10-Slide Pitch Deck framework
+   - The Warm Intro Hierarchy (Why PortCo founder intros convert at 90%)
+   - 4-Week Synchronized Investor Sprint timeline
+   - Term Sheet Red Flags (participating preferred, option pool shuffle)
+3. Copy-Paste Scripts: Forwardable intro emails, high-converting cold outreach, and monthly investor update templates.
+4. Interactive Readiness Calculator: 4-question diagnostic to see if your traction matches institutional VC criteria.
+5. Export to CSV/JSON: Build your CRM list in seconds.
 
-GitHub Repo: https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index
+Check it out here: https://topvc.flugelsoft.com
 
-Hope this saves you dozens of hours in your investor research! Let me know if there are any specific funds or angels you'd like added.
+Would love any feedback, suggested fund additions, or founder questions!
 ```
 
 ---
 
-## 5. WhatsApp / Telegram / Discord Community Snippets
+## 5. 📱 WhatsApp & Telegram Startup Groups
 
-```text
-🚀 *Founder Resource: Global & India Venture Capital (VC) Index*
+```markdown
+🚀 *Founders & Angels — Check this out!*
 
-If anyone in the cohort is actively fundraising or building their investor target list for 2026, here is an open database ranking 50+ top global & India VC funds:
+Ron Hatibaruah and Kalyanjit Hatibaruah have launched the *Global & India Venture Capital Index + Founder Playbook*:
 
-📌 *Key Highlights:*
-• Over $1.05T+ in tracked AUM across 6 tiers (Sequoia, Accel, Peak XV, Elevation, Blume, Nexus, 3one4, a16z, etc.)
-• Detailed Check Sizes ($100k angel/pre-seed to $100M+ growth)
-• Direct portfolio search (search "OpenAI", "Razorpay", "Zepto", "Postman")
-• Compare funds side-by-side & export target list to CSV
+🔗 *https://topvc.flugelsoft.com*
 
-🔗 *Repository:* https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index
-Curated by: Ron Hatibaruah (https://www.linkedin.com/in/ronhatibaruah/) & Kalyanjit Hatibaruah (https://www.linkedin.com/in/kalyanjit)
+✨ *What's inside:*
+• 📊 *50+ Top VC Funds*: Peak XV, Accel, Elevation, Nexus, Blume, WestBridge, PremjiInvest, etc.
+• 🎯 *Detailed Fund Specs*: Check sizes, AUM, sectors, key partners, and portfolio unicorns.
+• 🎓 *Visual Founder Playbook*: 10-slide deck teardown, dilution benchmarks, warm intro pyramid, and term sheet red flags.
+• 📋 *Copy-Paste Email Templates*: Forwardable intro blurb, cold partner email, and investor updates.
+• 📥 *1-Click Export*: Download full investor pipeline as CSV/JSON for your CRM.
+
+Bookmark your target investor list today:
+👉 https://topvc.flugelsoft.com
 ```
 
 ---
 
-## 6. Social Comment / Engagement Reply Templates
+## 6. 🎬 60-Second Short Video / Reel Script (Instagram / YouTube Shorts / TikTok)
 
-#### When someone asks: *"Who are the best VCs for early-stage B2B SaaS?"*
-> "For early-stage B2B SaaS, look closely at Nexus Venture Partners, Accel, Together Fund (operator-led by SaaS founders), Matrix Partners (Z47), and Blume. We recently categorized their check sizes, stages, and exits here: https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index"
+```markdown
+[Hook - 0:00 to 0:05]
+"Stop sending generic cold emails to 200 random VCs. Here is the exact playbook to raise your seed round in 2026."
 
-#### When someone asks: *"Which funds are actively backing DeepTech and SpaceTech in India / globally?"*
-> "For DeepTech and SpaceTech, check out Lux Capital, Founders Fund, and DCVC globally, and Speciale Invest, Endiya Partners, and YourNest in India. Here is a breakdown of their check sizes and portfolio exits: https://github.com/RonHatibaruah/Global-and-India-Venture-Capital-Index"
+[Body - 0:05 to 0:35]
+"Step 1: Check your stage benchmarks. For Pre-Seed you need a prototype and unfair advantage. For Seed, you need $10k to $50k MRR and 15% month-over-month growth.
+Step 2: Map out your target funds. Don't pitch a growth fund for a pre-seed round.
+Step 3: Never send a generic cold email. Use the Warm Intro Pyramid: Get a founder backed by that VC to introduce you. It has a 90% response rate!
+Step 4: Watch out for toxic term sheet clauses like Participating Preferred or the Pre-Money Option Pool Shuffle."
+
+[CTA - 0:35 to 0:60]
+"We built an entire free database mapping 50+ top global and India VC funds, plus visual pitch deck frameworks and copy-paste email templates.
+Check out the link in bio or head to topvc.flugelsoft.com curated by Ron & Kalyanjit Hatibaruah. Drop a comment if you're fundraising this quarter!"
+```
