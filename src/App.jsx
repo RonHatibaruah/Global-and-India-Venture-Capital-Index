@@ -67,6 +67,7 @@ export function updateSEO({ title, description, canonicalUrl, fund = null }) {
 }
 
 function MainApp() {
+  const { currentUser, requireAuth, openAuthModal } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTier, setSelectedTier] = useState('All Tiers');
   const [selectedRegion, setSelectedRegion] = useState('All Regions');
@@ -98,6 +99,31 @@ function MainApp() {
       console.error(e);
     }
   }, [favorites]);
+
+  // Global Link Click Interceptor: Any link clicked on the homepage requires Google Auth
+  useEffect(() => {
+    const handleGlobalLinkClick = (e) => {
+      const anchor = e.target.closest('a');
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      // If user is not authenticated and clicked any navigation or external link
+      if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+        if (!currentUser) {
+          e.preventDefault();
+          e.stopPropagation();
+          openAuthModal({
+            targetUrl: href,
+            title: 'Google Sign-In Required',
+            message: `Sign in or register with Google to access ${href} and unlock full platform features.`
+          });
+        }
+      }
+    };
+
+    document.addEventListener('click', handleGlobalLinkClick, true);
+    return () => document.removeEventListener('click', handleGlobalLinkClick, true);
+  }, [currentUser, openAuthModal]);
 
   // Handle URL deep-linking on initial mount and browser back/forward
   useEffect(() => {
@@ -172,10 +198,21 @@ function MainApp() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle Select Fund
+  // Handle Select Fund (Guarded with Google Auth)
   const handleSelectFund = (fund) => {
-    setSelectedFund(fund);
-    if (fund) {
+    if (!fund) {
+      setSelectedFund(null);
+      window.history.pushState({}, '', '/');
+      updateSEO({
+        title: 'Top Venture Capital (VC) Funds Globally & India | Market Prestige, AUM & Track Record',
+        description: 'Comprehensive global and India directory of top Venture Capital (VC) funds categorized by prestige tiers, investment stage, AUM, and track record of backing generation-defining tech companies.',
+        canonicalUrl: `${BASE_ORIGIN}/`
+      });
+      return;
+    }
+
+    requireAuth(null, () => {
+      setSelectedFund(fund);
       const slug = slugify(fund.name);
       window.history.pushState({ fundId: fund.id }, '', `/fund/${slug}`);
       updateSEO({
@@ -184,33 +221,57 @@ function MainApp() {
         canonicalUrl: `${BASE_ORIGIN}/fund/${slug}`,
         fund: fund
       });
-    } else {
-      window.history.pushState({}, '', '/');
-      updateSEO({
-        title: 'Top Venture Capital (VC) Funds Globally & India | Market Prestige, AUM & Track Record',
-        description: 'Comprehensive global and India directory of top Venture Capital (VC) funds categorized by prestige tiers, investment stage, AUM, and track record of backing generation-defining tech companies.',
-        canonicalUrl: `${BASE_ORIGIN}/`
-      });
-    }
+    }, {
+      title: `Sign In to View ${fund.name} Intelligence`,
+      message: `Sign in or register with Google to unlock ${fund.name}'s verified investment thesis, return metrics, check sizes, and GP contacts.`
+    });
   };
 
   const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+    requireAuth(null, () => {
+      setFavorites((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      );
+    }, {
+      title: 'Sign In to Bookmark Fund',
+      message: 'Sign in with Google to save and sync your shortlisted VC funds to your personal target list.'
+    });
   };
 
   const toggleCompare = (fund) => {
-    setComparedFunds((prev) => {
-      const exists = prev.some((f) => f.id === fund.id);
-      if (exists) {
-        return prev.filter((f) => f.id !== fund.id);
-      }
-      if (prev.length >= 4) {
-        alert('You can compare up to 4 VC funds simultaneously.');
-        return prev;
-      }
-      return [...prev, fund];
+    requireAuth(null, () => {
+      setComparedFunds((prev) => {
+        const exists = prev.some((f) => f.id === fund.id);
+        if (exists) {
+          return prev.filter((f) => f.id !== fund.id);
+        }
+        if (prev.length >= 4) {
+          alert('You can compare up to 4 VC funds simultaneously.');
+          return prev;
+        }
+        return [...prev, fund];
+      });
+    }, {
+      title: 'Sign In to Compare VC Funds',
+      message: 'Sign in with Google to compare funds side-by-side on AUM, check sizes, stages, and exits.'
+    });
+  };
+
+  const handleOpenCompare = () => {
+    requireAuth(null, () => {
+      setIsCompareOpen(true);
+    }, {
+      title: 'Sign In to Open Comparison Matrix',
+      message: 'Sign in with Google to view your side-by-side VC fund comparison.'
+    });
+  };
+
+  const handleOpenContact = () => {
+    requireAuth(null, () => {
+      setIsContactOpen(true);
+    }, {
+      title: 'Sign In to Contact & Submit Updates',
+      message: 'Sign in or register with Google to submit intelligence updates or message the editorial team.'
     });
   };
 
@@ -343,12 +404,12 @@ function MainApp() {
         setShowFavoritesOnly={setShowFavoritesOnly}
         favoritesCount={favorites.length}
         comparedFundsCount={comparedFunds.length}
-        onOpenCompare={() => setIsCompareOpen(true)}
+        onOpenCompare={handleOpenCompare}
         totalFunds={VC_FUNDS.length}
         filteredCount={filteredFunds.length}
         onExportJson={handleExportJson}
         onExportCsv={handleExportCsv}
-        onOpenContact={() => setIsContactOpen(true)}
+        onOpenContact={handleOpenContact}
         onResetFilters={handleResetFilters}
       />
 
@@ -450,7 +511,7 @@ function MainApp() {
       )}
 
       {/* Footer */}
-      <Footer onOpenContact={() => setIsContactOpen(true)} />
+      <Footer onOpenContact={handleOpenContact} />
     </div>
   );
 }
