@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="ycGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7700"/>
+      <stop offset="100%" stop-color="#FF5500"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#FF5500" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Crisp White Outer Container -->
+  <rect width="512" height="512" rx="120" fill="#FFFFFF"/>
+  <rect x="8" y="8" width="496" height="496" rx="112" fill="none" stroke="#E2E8F0" stroke-width="12"/>
+
+  <!-- Y Combinator Core Orange Icon Container -->
+  <rect x="64" y="64" width="384" height="384" rx="80" fill="url(#ycGrad)" filter="url(#dropShadow)"/>
+
+  <!-- Iconic Bold 'Y' Letterform -->
+  <polygon points="152,148 220,148 256,236 292,148 360,148 288,290 288,376 224,376 224,290" fill="#FFFFFF"/>
+
+  <!-- Innovation Node / Green Dot Indicator -->
+  <circle cx="396" cy="116" r="22" fill="#10B981" stroke="#FFFFFF" stroke-width="6"/>
+</svg>
