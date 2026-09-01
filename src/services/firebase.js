@@ -10,14 +10,11 @@ import {
   getFirestore,
   doc,
   setDoc,
-  getDoc,
   collection,
   addDoc,
   getDocs,
-  query,
-  orderBy,
   limit,
-  serverTimestamp
+  onSnapshot
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -51,38 +48,45 @@ export const isAdminUser = (user) => {
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
+// Timeout helper to prevent Firestore SDK calls from hanging indefinitely
+const withTimeout = (promise, ms = 4000) => {
+  let timer;
+  const timeoutPromise = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error('REQUEST_TIMEOUT')), ms);
+  });
+  return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer));
+};
+
 // Log User Activity to Firestore & Local Storage
 export const logActivity = async (user, actionType, details = {}) => {
   if (!user) return;
 
+  const nowIso = new Date().toISOString();
   const activityData = {
     uid: user.uid,
     userEmail: user.email,
     userName: user.displayName || user.email.split('@')[0],
     userPhoto: user.photoURL || '',
-    actionType, // 'LOGIN' | 'FUND_VIEW' | 'EXTERNAL_LINK' | 'EXPORT_CSV' | 'EXPORT_JSON' | 'BOOKMARK' | 'COMPARE' | 'CONTACT_SUBMIT'
+    actionType, // 'LOGIN' | 'FUND_VIEW' | 'EXTERNAL_LINK' | 'EXPORT_CSV' | 'EXPORT_JSON' | 'BOOKMARK' | 'COMPARE' | 'PLAYBOOK_VIEW' | 'CONTACT_SUBMIT'
     details,
-    timestamp: new Date().toISOString()
+    timestamp: nowIso
   };
 
-  // Local sync
+  // 1. Local storage sync (immediate)
   try {
     const localActs = JSON.parse(localStorage.getItem('vc_admin_activities') || '[]');
-    localActs.unshift({ ...activityData, id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4) });
+    localActs.unshift({ ...activityData, id: 'act_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6) });
     localStorage.setItem('vc_admin_activities', JSON.stringify(localActs.slice(0, 500)));
   } catch (e) {
-    console.error('Local activity log error:', e);
+    console.warn('Local activity log error:', e);
   }
 
-  // Firestore sync
+  // 2. Firestore sync
   try {
     const actRef = collection(db, 'user_activities');
-    await addDoc(actRef, {
-      ...activityData,
-      createdAt: serverTimestamp()
-    });
+    await withTimeout(addDoc(actRef, activityData), 3500);
   } catch (err) {
-    // Graceful fallback to local tracking if firestore rules are locked
+    // Firestore rules or offline fallback
   }
 };
 
@@ -90,16 +94,17 @@ export const logActivity = async (user, actionType, details = {}) => {
 export const recordUserProfile = async (user) => {
   if (!user) return;
 
+  const nowIso = new Date().toISOString();
   const userData = {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName || user.email.split('@')[0],
     photoURL: user.photoURL || '',
-    lastLoginAt: new Date().toISOString(),
+    lastLoginAt: nowIso,
     provider: user.providerData?.[0]?.providerId || 'google.com'
   };
 
-  // Local storage registry sync
+  // 1. Local storage registry sync
   try {
     const localUsers = JSON.parse(localStorage.getItem('vc_admin_users') || '[]');
     const existingIndex = localUsers.findIndex(u => u.uid === user.uid || u.email === user.email);
@@ -112,91 +117,144 @@ export const recordUserProfile = async (user) => {
     } else {
       localUsers.unshift({
         ...userData,
-        registeredAt: new Date().toISOString(),
+        registeredAt: nowIso,
         loginCount: 1
       });
     }
     localStorage.setItem('vc_admin_users', JSON.stringify(localUsers));
   } catch (e) {
-    console.error('Local user record error:', e);
+    console.warn('Local user record error:', e);
   }
 
-  // Firestore user document update
+  // 2. Firestore user document update (Atomic Upsert)
   try {
     const userDocRef = doc(db, 'users', user.uid);
-    const snap = await getDoc(userDocRef);
-    if (!snap.exists()) {
-      await setDoc(userDocRef, {
-        ...userData,
-        registeredAt: serverTimestamp(),
-        createdAt: serverTimestamp(),
-        loginCount: 1
-      });
-    } else {
-      await setDoc(userDocRef, {
-        ...userData,
-        lastLoginAt: serverTimestamp()
-      }, { merge: true });
-    }
+    await withTimeout(
+      setDoc(
+        userDocRef,
+        {
+          ...userData,
+          registeredAt: userData.registeredAt || nowIso,
+          updatedAt: nowIso
+        },
+        { merge: true }
+      ),
+      3500
+    );
   } catch (err) {
     // Firestore rules fallback
+    console.warn('Firestore setDoc notice:', err?.message || err);
   }
 
-  // Log the login activity
-  await logActivity(user, 'LOGIN', { message: 'User logged in via Google Authentication' });
+  // 3. Log the login activity
+  await logActivity(user, 'LOGIN', { message: 'User authenticated via Google Account' });
 };
 
-// Fetch All Registered Users for Admin
+// Fetch All Registered Users for Admin (with diagnostics & fallback)
 export const getRegisteredUsers = async () => {
   let usersList = [];
+  let firestoreStatus = 'connected';
+  let firestoreError = null;
 
-  // Try Firestore first
+  // 1. Try Firestore first
   try {
-    const q = query(collection(db, 'users'), limit(200));
-    const snapshot = await getDocs(q);
+    const q = collection(db, 'users');
+    const snapshot = await withTimeout(getDocs(q), 4000);
     if (!snapshot.empty) {
-      usersList = snapshot.docs.map(d => ({
-        id: d.id,
-        ...d.data(),
-        registeredAt: d.data().registeredAt?.toDate?.()?.toISOString?.() || d.data().registeredAt || new Date().toISOString(),
-        lastLoginAt: d.data().lastLoginAt?.toDate?.()?.toISOString?.() || d.data().lastLoginAt || new Date().toISOString()
-      }));
+      usersList = snapshot.docs.map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          uid: data.uid || d.id,
+          displayName: data.displayName || 'Google User',
+          email: data.email || 'N/A',
+          photoURL: data.photoURL || '',
+          registeredAt: data.registeredAt || data.createdAt || new Date().toISOString(),
+          lastLoginAt: data.lastLoginAt || data.updatedAt || new Date().toISOString(),
+          loginCount: data.loginCount || 1,
+          provider: data.provider || 'google.com'
+        };
+      });
     }
   } catch (e) {
-    // fallback to local storage
+    firestoreStatus = 'error';
+    firestoreError = e?.code === 'permission-denied'
+      ? 'Firestore Permission Denied (Update Firestore Security Rules)'
+      : (e?.message || 'Unable to reach Firestore database');
   }
 
-  // Fallback / merge local users
+  // 2. Merge local storage users
   try {
     const localUsers = JSON.parse(localStorage.getItem('vc_admin_users') || '[]');
     localUsers.forEach(lu => {
-      if (!usersList.some(u => u.uid === lu.uid || u.email === lu.email)) {
+      if (!usersList.some(u => (u.uid && u.uid === lu.uid) || (u.email && u.email.toLowerCase() === lu.email?.toLowerCase()))) {
         usersList.push(lu);
       }
     });
-  } catch (e) {}
+  } catch (e) {
+    console.warn('Local users parse error:', e);
+  }
 
-  return usersList.sort((a, b) => new Date(b.lastLoginAt || 0) - new Date(a.lastLoginAt || 0));
+  // 3. Guarantee currently authenticated user is in the list
+  if (auth.currentUser) {
+    const cur = auth.currentUser;
+    const curEmail = cur.email?.toLowerCase();
+    const existing = usersList.find(u => (u.uid && u.uid === cur.uid) || (u.email && u.email.toLowerCase() === curEmail));
+    if (existing) {
+      existing.displayName = cur.displayName || existing.displayName;
+      existing.photoURL = cur.photoURL || existing.photoURL;
+      existing.email = cur.email || existing.email;
+    } else {
+      usersList.unshift({
+        id: cur.uid,
+        uid: cur.uid,
+        displayName: cur.displayName || cur.email?.split('@')[0] || 'Admin User',
+        email: cur.email,
+        photoURL: cur.photoURL || '',
+        registeredAt: new Date().toISOString(),
+        lastLoginAt: new Date().toISOString(),
+        loginCount: 1,
+        provider: 'google.com'
+      });
+    }
+  }
+
+  // Sort newest first
+  usersList.sort((a, b) => new Date(b.lastLoginAt || b.registeredAt || 0) - new Date(a.lastLoginAt || a.registeredAt || 0));
+
+  return {
+    users: usersList,
+    firestoreStatus,
+    firestoreError
+  };
 };
 
 // Fetch User Activities for Admin
 export const getUserActivities = async () => {
   let activitiesList = [];
+  let firestoreStatus = 'connected';
+  let firestoreError = null;
 
   try {
-    const q = query(collection(db, 'user_activities'), orderBy('createdAt', 'desc'), limit(300));
-    const snapshot = await getDocs(q);
+    // Query collection without composite order to prevent index errors
+    const q = collection(db, 'user_activities');
+    const snapshot = await withTimeout(getDocs(q), 4000);
     if (!snapshot.empty) {
-      activitiesList = snapshot.docs.map(d => ({
-        id: d.id,
-        ...d.data(),
-        timestamp: d.data().createdAt?.toDate?.()?.toISOString?.() || d.data().timestamp || new Date().toISOString()
-      }));
+      activitiesList = snapshot.docs.map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          ...data,
+          timestamp: data.timestamp || data.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString()
+        };
+      });
     }
   } catch (e) {
-    // fallback to local storage
+    firestoreStatus = 'error';
+    firestoreError = e?.message || 'Firestore query error';
   }
 
+  // Merge local activities
   try {
     const localActs = JSON.parse(localStorage.getItem('vc_admin_activities') || '[]');
     localActs.forEach(la => {
@@ -204,9 +262,17 @@ export const getUserActivities = async () => {
         activitiesList.push(la);
       }
     });
-  } catch (e) {}
+  } catch (e) {
+    console.warn('Local activities parse error:', e);
+  }
 
-  return activitiesList.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+  activitiesList.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+  return {
+    activities: activitiesList,
+    firestoreStatus,
+    firestoreError
+  };
 };
 
 export const loginWithGoogle = async () => {

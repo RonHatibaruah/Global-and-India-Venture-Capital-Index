@@ -18,9 +18,15 @@ import {
   FileSpreadsheet,
   FileCode,
   Star,
-  Scale
+  Scale,
+  AlertTriangle,
+  Copy,
+  Check,
+  CheckCircle2,
+  Database,
+  UserPlus
 } from 'lucide-react';
-import { getRegisteredUsers, getUserActivities } from '../services/firebase';
+import { getRegisteredUsers, getUserActivities, recordUserProfile, logActivity } from '../services/firebase';
 
 export default function AdminModal({ isOpen, onClose }) {
   const { currentUser, isAdmin, adminEmail } = useAuth();
@@ -30,18 +36,47 @@ export default function AdminModal({ isOpen, onClose }) {
   const [loadingData, setLoadingData] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedActionFilter, setSelectedActionFilter] = useState('ALL');
+  const [cloudStatus, setCloudStatus] = useState('connected');
+  const [cloudError, setCloudError] = useState(null);
+  const [showRulesGuide, setShowRulesGuide] = useState(false);
+  const [copiedRules, setCopiedRules] = useState(false);
+
+  const FIRESTORE_RULES_SNIPPET = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null;
+    }
+    match /user_activities/{activityId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}`;
 
   const fetchData = async () => {
     setLoadingData(true);
+
+    // 1. Fetch Users
     try {
-      const [fetchedUsers, fetchedActs] = await Promise.all([
-        getRegisteredUsers(),
-        getUserActivities()
-      ]);
-      setUsers(fetchedUsers);
-      setActivities(fetchedActs);
+      const usersRes = await getRegisteredUsers();
+      setUsers(usersRes.users || []);
+      if (usersRes.firestoreStatus === 'error') {
+        setCloudStatus('error');
+        setCloudError(usersRes.firestoreError);
+      } else {
+        setCloudStatus('connected');
+        setCloudError(null);
+      }
     } catch (e) {
-      console.error('Error fetching admin data:', e);
+      console.error('Error fetching admin users:', e);
+    }
+
+    // 2. Fetch Activities
+    try {
+      const actsRes = await getUserActivities();
+      setActivities(actsRes.activities || []);
+    } catch (e) {
+      console.error('Error fetching admin activities:', e);
     } finally {
       setLoadingData(false);
     }
@@ -52,6 +87,21 @@ export default function AdminModal({ isOpen, onClose }) {
       fetchData();
     }
   }, [isOpen, isAdmin]);
+
+  // Copy Firestore Rules
+  const handleCopyRules = () => {
+    navigator.clipboard.writeText(FIRESTORE_RULES_SNIPPET);
+    setCopiedRules(true);
+    setTimeout(() => setCopiedRules(false), 2500);
+  };
+
+  // Sync Current User explicitly
+  const handleSyncCurrentAccount = async () => {
+    if (currentUser) {
+      await recordUserProfile(currentUser);
+      await fetchData();
+    }
+  };
 
   // Filtered users
   const filteredUsers = useMemo(() => {
@@ -99,6 +149,8 @@ export default function AdminModal({ isOpen, onClose }) {
         return <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">BOOKMARK</span>;
       case 'COMPARE':
         return <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">COMPARE</span>;
+      case 'PLAYBOOK_VIEW':
+        return <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-violet-100 text-violet-800 border border-violet-200">PLAYBOOK</span>;
       case 'CONTACT_SUBMIT':
         return <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-100 text-orange-800 border border-orange-200">CONTACT</span>;
       default:
@@ -187,11 +239,11 @@ export default function AdminModal({ isOpen, onClose }) {
         {/* Modal Header */}
         <div className="p-5 sm:px-8 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30 shrink-0">
               <ShieldAlert className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-lg font-black font-heading tracking-tight text-white">
                   Admin Control &amp; User Intelligence Center
                 </h3>
@@ -223,6 +275,49 @@ export default function AdminModal({ isOpen, onClose }) {
             </button>
           </div>
         </div>
+
+        {/* Cloud Status Diagnostic Alert Banner if Firestore Needs Configuration */}
+        {cloudStatus === 'error' && (
+          <div className="px-5 py-3 bg-amber-50 border-b border-amber-200 text-amber-950 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>
+                <strong>Cloud Sync Notice:</strong> Firebase Firestore rules need to be published in Firebase Console to enable multi-device user sync.
+              </span>
+            </div>
+            <button
+              onClick={() => setShowRulesGuide(!showRulesGuide)}
+              className="px-2.5 py-1 bg-amber-200/80 hover:bg-amber-300 text-amber-900 rounded-lg font-bold text-[11px] transition-colors cursor-pointer self-start sm:self-auto"
+            >
+              {showRulesGuide ? 'Hide Rules Guide' : 'View 1-Minute Fix'}
+            </button>
+          </div>
+        )}
+
+        {/* Expandable Firestore Security Rules Guide */}
+        {showRulesGuide && (
+          <div className="p-4 sm:px-8 bg-slate-900 text-slate-200 border-b border-slate-700 text-xs space-y-3 shrink-0">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                <Database className="w-4 h-4" /> 1-Minute Firebase Firestore Security Rules Setup
+              </span>
+              <button
+                onClick={handleCopyRules}
+                className="flex items-center gap-1 px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] cursor-pointer"
+              >
+                {copiedRules ? <Check className="w-3 h-3 text-emerald-300" /> : <Copy className="w-3 h-3" />}
+                <span>{copiedRules ? 'Copied!' : 'Copy Rules'}</span>
+              </button>
+            </div>
+            <p className="text-slate-400 text-[11px]">
+              1. Open <a href="https://console.firebase.google.com/project/global-and-indiavc/firestore/rules" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline font-bold">Firebase Console &gt; Firestore Database &gt; Rules</a>.<br />
+              2. Paste the rules snippet below and click <strong>Publish</strong>.
+            </p>
+            <pre className="p-3 bg-slate-950 rounded-xl font-mono text-[11px] text-emerald-400 overflow-x-auto border border-slate-800">
+              {FIRESTORE_RULES_SNIPPET}
+            </pre>
+          </div>
+        )}
 
         {/* Metric Summary Cards */}
         <div className="p-4 sm:px-8 bg-slate-50 border-b border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
@@ -318,6 +413,7 @@ export default function AdminModal({ isOpen, onClose }) {
                 <option value="EXPORT_JSON">JSON Exports</option>
                 <option value="BOOKMARK">Bookmarks</option>
                 <option value="COMPARE">Comparisons</option>
+                <option value="PLAYBOOK_VIEW">Playbook Views</option>
                 <option value="CONTACT_SUBMIT">Contact Submissions</option>
               </select>
             )}
@@ -343,9 +439,16 @@ export default function AdminModal({ isOpen, onClose }) {
           ) : activeTab === 'users' ? (
             /* Users Directory Table */
             filteredUsers.length === 0 ? (
-              <div className="text-center py-16 text-slate-500">
-                <Users className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+              <div className="text-center py-16 text-slate-500 space-y-3">
+                <Users className="w-8 h-8 mx-auto text-slate-300" />
                 <p className="text-xs font-semibold">No registered users found matching your search.</p>
+                <button
+                  onClick={handleSyncCurrentAccount}
+                  className="px-3.5 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-indigo-700 cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Sync Current User Account</span>
+                </button>
               </div>
             ) : (
               <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
@@ -354,10 +457,10 @@ export default function AdminModal({ isOpen, onClose }) {
                     <tr>
                       <th className="py-3 px-4">User</th>
                       <th className="py-3 px-4">Email</th>
-                      <th className="py-3 px-4">Registered At</th>
+                      <th className="py-3 px-4">First Registered</th>
                       <th className="py-3 px-4">Last Active / Login</th>
                       <th className="py-3 px-4 text-center">Login Sessions</th>
-                      <th className="py-3 px-4 text-center">Auth Provider</th>
+                      <th className="py-3 px-4 text-center">Auth Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -377,7 +480,14 @@ export default function AdminModal({ isOpen, onClose }) {
                               </div>
                             )}
                             <div>
-                              <div className="font-bold text-slate-900">{user.displayName || 'Google User'}</div>
+                              <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>{user.displayName || 'Google User'}</span>
+                                {user.email?.toLowerCase() === adminEmail.toLowerCase() && (
+                                  <span className="px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 text-[9px] font-black uppercase">
+                                    Admin
+                                  </span>
+                                )}
+                              </div>
                               <div className="text-[10px] text-slate-400 font-mono">UID: {user.uid ? user.uid.substring(0, 10) + '...' : 'N/A'}</div>
                             </div>
                           </div>
@@ -459,6 +569,9 @@ export default function AdminModal({ isOpen, onClose }) {
                           )}
                           {act.details?.tier && (
                             <span className="text-slate-600">Tier: {act.details.tier}</span>
+                          )}
+                          {act.details?.source && (
+                            <span className="text-slate-500 text-[11px]">Source: {act.details.source}</span>
                           )}
                         </td>
                       </tr>
