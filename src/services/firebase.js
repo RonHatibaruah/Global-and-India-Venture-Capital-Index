@@ -12,9 +12,7 @@ import {
   setDoc,
   collection,
   addDoc,
-  getDocs,
-  limit,
-  onSnapshot
+  getDocs
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -150,6 +148,63 @@ export const recordUserProfile = async (user) => {
   await logActivity(user, 'LOGIN', { message: 'User authenticated via Google Account' });
 };
 
+// Save Imported Users (from CSV / JSON export or manual entry)
+export const saveImportedUsers = async (newUsers) => {
+  if (!Array.isArray(newUsers) || newUsers.length === 0) return 0;
+
+  const nowIso = new Date().toISOString();
+  let countAdded = 0;
+
+  // 1. Save to local storage
+  try {
+    const localUsers = JSON.parse(localStorage.getItem('vc_admin_users') || '[]');
+    newUsers.forEach((nu) => {
+      const email = nu.email?.toLowerCase().trim();
+      if (!email) return;
+
+      const existingIndex = localUsers.findIndex(
+        (u) => u.email?.toLowerCase() === email || (u.uid && u.uid === nu.uid)
+      );
+
+      const userRecord = {
+        uid: nu.uid || 'usr_' + Math.random().toString(36).substring(2, 10),
+        email: nu.email,
+        displayName: nu.displayName || nu.name || email.split('@')[0],
+        photoURL: nu.photoURL || '',
+        registeredAt: nu.registeredAt || nu.createdAt || nowIso,
+        lastLoginAt: nu.lastLoginAt || nu.lastSignIn || nowIso,
+        loginCount: nu.loginCount || 1,
+        provider: nu.provider || 'google.com'
+      };
+
+      if (existingIndex >= 0) {
+        localUsers[existingIndex] = { ...localUsers[existingIndex], ...userRecord };
+      } else {
+        localUsers.push(userRecord);
+        countAdded++;
+      }
+    });
+
+    localStorage.setItem('vc_admin_users', JSON.stringify(localUsers));
+  } catch (e) {
+    console.error('Local import error:', e);
+  }
+
+  // 2. Sync to Firestore if accessible
+  try {
+    for (const nu of newUsers) {
+      if (nu.uid) {
+        const userDocRef = doc(db, 'users', nu.uid);
+        await setDoc(userDocRef, nu, { merge: true });
+      }
+    }
+  } catch (err) {
+    console.warn('Firestore import sync warning:', err);
+  }
+
+  return countAdded;
+};
+
 // Fetch All Registered Users for Admin (with diagnostics & fallback)
 export const getRegisteredUsers = async () => {
   let usersList = [];
@@ -161,7 +216,7 @@ export const getRegisteredUsers = async () => {
     const q = collection(db, 'users');
     const snapshot = await withTimeout(getDocs(q), 4000);
     if (!snapshot.empty) {
-      usersList = snapshot.docs.map(d => {
+      usersList = snapshot.docs.map((d) => {
         const data = d.data();
         return {
           id: d.id,
@@ -178,16 +233,27 @@ export const getRegisteredUsers = async () => {
     }
   } catch (e) {
     firestoreStatus = 'error';
-    firestoreError = e?.code === 'permission-denied'
+    const isPermDenied =
+      e?.code === 'permission-denied' ||
+      e?.message?.includes('permission-denied') ||
+      e?.message?.includes('Missing or insufficient permissions');
+
+    firestoreError = isPermDenied
       ? 'Firestore Permission Denied (Update Firestore Security Rules)'
-      : (e?.message || 'Unable to reach Firestore database');
+      : e?.message || 'Unable to reach Firestore database';
   }
 
   // 2. Merge local storage users
   try {
     const localUsers = JSON.parse(localStorage.getItem('vc_admin_users') || '[]');
-    localUsers.forEach(lu => {
-      if (!usersList.some(u => (u.uid && u.uid === lu.uid) || (u.email && u.email.toLowerCase() === lu.email?.toLowerCase()))) {
+    localUsers.forEach((lu) => {
+      if (
+        !usersList.some(
+          (u) =>
+            (u.uid && u.uid === lu.uid) ||
+            (u.email && u.email.toLowerCase() === lu.email?.toLowerCase())
+        )
+      ) {
         usersList.push(lu);
       }
     });
@@ -199,7 +265,10 @@ export const getRegisteredUsers = async () => {
   if (auth.currentUser) {
     const cur = auth.currentUser;
     const curEmail = cur.email?.toLowerCase();
-    const existing = usersList.find(u => (u.uid && u.uid === cur.uid) || (u.email && u.email.toLowerCase() === curEmail));
+    const existing = usersList.find(
+      (u) => (u.uid && u.uid === cur.uid) || (u.email && u.email.toLowerCase() === curEmail)
+    );
+
     if (existing) {
       existing.displayName = cur.displayName || existing.displayName;
       existing.photoURL = cur.photoURL || existing.photoURL;
@@ -220,7 +289,11 @@ export const getRegisteredUsers = async () => {
   }
 
   // Sort newest first
-  usersList.sort((a, b) => new Date(b.lastLoginAt || b.registeredAt || 0) - new Date(a.lastLoginAt || a.registeredAt || 0));
+  usersList.sort(
+    (a, b) =>
+      new Date(b.lastLoginAt || b.registeredAt || 0) -
+      new Date(a.lastLoginAt || a.registeredAt || 0)
+  );
 
   return {
     users: usersList,
@@ -236,11 +309,10 @@ export const getUserActivities = async () => {
   let firestoreError = null;
 
   try {
-    // Query collection without composite order to prevent index errors
     const q = collection(db, 'user_activities');
     const snapshot = await withTimeout(getDocs(q), 4000);
     if (!snapshot.empty) {
-      activitiesList = snapshot.docs.map(d => {
+      activitiesList = snapshot.docs.map((d) => {
         const data = d.data();
         return {
           id: d.id,
@@ -257,8 +329,8 @@ export const getUserActivities = async () => {
   // Merge local activities
   try {
     const localActs = JSON.parse(localStorage.getItem('vc_admin_activities') || '[]');
-    localActs.forEach(la => {
-      if (!activitiesList.some(a => a.id === la.id)) {
+    localActs.forEach((la) => {
+      if (!activitiesList.some((a) => a.id === la.id)) {
         activitiesList.push(la);
       }
     });

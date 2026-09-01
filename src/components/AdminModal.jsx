@@ -24,9 +24,17 @@ import {
   Check,
   CheckCircle2,
   Database,
-  UserPlus
+  UserPlus,
+  Upload,
+  FileUp,
+  HelpCircle
 } from 'lucide-react';
-import { getRegisteredUsers, getUserActivities, recordUserProfile, logActivity } from '../services/firebase';
+import {
+  getRegisteredUsers,
+  getUserActivities,
+  recordUserProfile,
+  saveImportedUsers
+} from '../services/firebase';
 
 export default function AdminModal({ isOpen, onClose }) {
   const { currentUser, isAdmin, adminEmail } = useAuth();
@@ -41,13 +49,15 @@ export default function AdminModal({ isOpen, onClose }) {
   const [showRulesGuide, setShowRulesGuide] = useState(false);
   const [copiedRules, setCopiedRules] = useState(false);
 
+  // Import Modal State
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importText, setImportText] = useState('');
+  const [importSuccessMsg, setImportSuccessMsg] = useState('');
+
   const FIRESTORE_RULES_SNIPPET = `rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read, write: if request.auth != null;
-    }
-    match /user_activities/{activityId} {
+    match /{document=**} {
       allow read, write: if request.auth != null;
     }
   }
@@ -101,6 +111,86 @@ service cloud.firestore {
       await recordUserProfile(currentUser);
       await fetchData();
     }
+  };
+
+  // Handle Manual / File Import of Users
+  const handleProcessImport = async () => {
+    if (!importText.trim()) return;
+
+    try {
+      let parsedUsers = [];
+
+      // Try parsing JSON first
+      if (importText.trim().startsWith('[') || importText.trim().startsWith('{')) {
+        const rawJson = JSON.parse(importText);
+        const arr = Array.isArray(rawJson) ? rawJson : rawJson.users || [rawJson];
+        parsedUsers = arr.map((u) => ({
+          uid: u.uid || u.localId || 'usr_' + Math.random().toString(36).substring(2, 9),
+          email: u.email,
+          displayName: u.displayName || u.name || u.email?.split('@')[0] || 'User',
+          photoURL: u.photoURL || '',
+          registeredAt: u.createdAt ? new Date(Number(u.createdAt) || u.createdAt).toISOString() : new Date().toISOString(),
+          lastLoginAt: u.lastLoginAt ? new Date(Number(u.lastLoginAt) || u.lastLoginAt).toISOString() : new Date().toISOString(),
+          loginCount: 1,
+          provider: 'google.com'
+        }));
+      } else {
+        // Parse CSV or newline-separated / comma-separated text
+        const lines = importText.split('\n');
+        lines.forEach((line) => {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.toLowerCase().startsWith('user id') || trimmed.toLowerCase().startsWith('email')) return;
+
+          // Split by comma
+          const parts = trimmed.split(',').map((p) => p.replace(/^["']|["']$/g, '').trim());
+          if (parts.length >= 1) {
+            // Find email in parts
+            const emailPart = parts.find((p) => p.includes('@'));
+            if (emailPart) {
+              const uidPart = parts[0].length > 15 ? parts[0] : 'usr_' + Math.random().toString(36).substring(2, 9);
+              const namePart = parts.find((p) => p !== emailPart && p !== uidPart && isNaN(p)) || emailPart.split('@')[0];
+              parsedUsers.push({
+                uid: uidPart,
+                email: emailPart,
+                displayName: namePart,
+                photoURL: '',
+                registeredAt: new Date().toISOString(),
+                lastLoginAt: new Date().toISOString(),
+                loginCount: 1,
+                provider: 'google.com'
+              });
+            }
+          }
+        });
+      }
+
+      if (parsedUsers.length > 0) {
+        const count = await saveImportedUsers(parsedUsers);
+        setImportSuccessMsg(`Successfully imported & synced ${count} user(s)!`);
+        setTimeout(() => {
+          setImportSuccessMsg('');
+          setShowImportModal(false);
+          setImportText('');
+        }, 1800);
+        await fetchData();
+      } else {
+        alert('Could not find valid user emails in the pasted content. Please paste JSON or CSV.');
+      }
+    } catch (err) {
+      alert('Error parsing user data: ' + err.message);
+    }
+  };
+
+  // Handle CSV file upload
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setImportText(event.target?.result || '');
+    };
+    reader.readAsText(file);
   };
 
   // Filtered users
@@ -169,7 +259,7 @@ service cloud.firestore {
       u.loginCount || 1,
       `"${u.provider || 'google.com'}"`
     ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const link = document.createElement('a');
     link.setAttribute('href', encodeURI(csvContent));
     link.setAttribute('download', `vc_registered_users_${Date.now()}.csv`);
@@ -188,7 +278,7 @@ service cloud.firestore {
       `"${a.actionType || ''}"`,
       `"${JSON.stringify(a.details || {}).replace(/"/g, '""')}"`
     ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const link = document.createElement('a');
     link.setAttribute('href', encodeURI(csvContent));
     link.setAttribute('download', `vc_user_activities_${Date.now()}.csv`);
@@ -259,6 +349,15 @@ service cloud.firestore {
 
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setShowImportModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all cursor-pointer"
+              title="Import Users from Firebase Authentication"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Import Auth Users</span>
+            </button>
+
+            <button
               onClick={fetchData}
               disabled={loadingData}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all cursor-pointer disabled:opacity-50"
@@ -267,6 +366,7 @@ service cloud.firestore {
               <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
             </button>
+
             <button
               onClick={onClose}
               className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -282,12 +382,12 @@ service cloud.firestore {
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
               <span>
-                <strong>Cloud Sync Notice:</strong> Firebase Firestore rules need to be published in Firebase Console to enable multi-device user sync.
+                <strong>Firestore Permission Required:</strong> Firestore security rules currently block cross-device sync (`permission-denied`). To sync all users globally, publish the rules in Firebase Console.
               </span>
             </div>
             <button
               onClick={() => setShowRulesGuide(!showRulesGuide)}
-              className="px-2.5 py-1 bg-amber-200/80 hover:bg-amber-300 text-amber-900 rounded-lg font-bold text-[11px] transition-colors cursor-pointer self-start sm:self-auto"
+              className="px-2.5 py-1 bg-amber-200/80 hover:bg-amber-300 text-amber-900 rounded-lg font-bold text-[11px] transition-colors cursor-pointer self-start sm:self-auto shrink-0"
             >
               {showRulesGuide ? 'Hide Rules Guide' : 'View 1-Minute Fix'}
             </button>
@@ -297,21 +397,32 @@ service cloud.firestore {
         {/* Expandable Firestore Security Rules Guide */}
         {showRulesGuide && (
           <div className="p-4 sm:px-8 bg-slate-900 text-slate-200 border-b border-slate-700 text-xs space-y-3 shrink-0">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="font-bold text-amber-400 flex items-center gap-1.5">
                 <Database className="w-4 h-4" /> 1-Minute Firebase Firestore Security Rules Setup
               </span>
-              <button
-                onClick={handleCopyRules}
-                className="flex items-center gap-1 px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] cursor-pointer"
-              >
-                {copiedRules ? <Check className="w-3 h-3 text-emerald-300" /> : <Copy className="w-3 h-3" />}
-                <span>{copiedRules ? 'Copied!' : 'Copy Rules'}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://console.firebase.google.com/project/global-and-indiavc/firestore/rules"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px]"
+                >
+                  <span>Open Firebase Console</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+                <button
+                  onClick={handleCopyRules}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] cursor-pointer"
+                >
+                  {copiedRules ? <Check className="w-3 h-3 text-emerald-300" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedRules ? 'Copied!' : 'Copy Rules'}</span>
+                </button>
+              </div>
             </div>
-            <p className="text-slate-400 text-[11px]">
+            <p className="text-slate-400 text-[11px] leading-relaxed">
               1. Open <a href="https://console.firebase.google.com/project/global-and-indiavc/firestore/rules" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline font-bold">Firebase Console &gt; Firestore Database &gt; Rules</a>.<br />
-              2. Paste the rules snippet below and click <strong>Publish</strong>.
+              2. Paste the snippet below and click <strong>Publish</strong>. All authenticated Google users will automatically write and sync in real time!
             </p>
             <pre className="p-3 bg-slate-950 rounded-xl font-mono text-[11px] text-emerald-400 overflow-x-auto border border-slate-800">
               {FIRESTORE_RULES_SNIPPET}
@@ -323,7 +434,7 @@ service cloud.firestore {
         <div className="p-4 sm:px-8 bg-slate-50 border-b border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
           <div className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-2xs">
             <div className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-indigo-600" /> Total Registered Users
+              <Users className="w-3.5 h-3.5 text-indigo-600" /> Total Authenticated Users
             </div>
             <div className="text-xl font-black font-heading text-slate-900 mt-1">
               {users.length}
@@ -344,7 +455,7 @@ service cloud.firestore {
               <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> Link Clicks Handled
             </div>
             <div className="text-xl font-black font-heading text-slate-900 mt-1">
-              {activities.filter(a => a.actionType === 'EXTERNAL_LINK').length}
+              {activities.filter((a) => a.actionType === 'EXTERNAL_LINK').length}
             </div>
           </div>
 
@@ -353,7 +464,7 @@ service cloud.firestore {
               <Download className="w-3.5 h-3.5 text-cyan-600" /> CSV / JSON Exports
             </div>
             <div className="text-xl font-black font-heading text-slate-900 mt-1">
-              {activities.filter(a => a.actionType === 'EXPORT_CSV' || a.actionType === 'EXPORT_JSON').length}
+              {activities.filter((a) => a.actionType === 'EXPORT_CSV' || a.actionType === 'EXPORT_JSON').length}
             </div>
           </div>
         </div>
@@ -370,7 +481,7 @@ service cloud.firestore {
               }`}
             >
               <Users className="w-4 h-4" />
-              <span>Registered Users ({users.length})</span>
+              <span>All Users ({users.length})</span>
             </button>
 
             <button
@@ -442,13 +553,22 @@ service cloud.firestore {
               <div className="text-center py-16 text-slate-500 space-y-3">
                 <Users className="w-8 h-8 mx-auto text-slate-300" />
                 <p className="text-xs font-semibold">No registered users found matching your search.</p>
-                <button
-                  onClick={handleSyncCurrentAccount}
-                  className="px-3.5 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-indigo-700 cursor-pointer inline-flex items-center gap-1.5"
-                >
-                  <UserPlus className="w-3.5 h-3.5" />
-                  <span>Sync Current User Account</span>
-                </button>
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={handleSyncCurrentAccount}
+                    className="px-3.5 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-indigo-700 cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Sync Admin Account</span>
+                  </button>
+                  <button
+                    onClick={() => setShowImportModal(true)}
+                    className="px-3.5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-slate-800 cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Import Users from Firebase Auth</span>
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
@@ -594,6 +714,83 @@ service cloud.firestore {
           </button>
         </div>
       </div>
+
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
+          <div
+            onClick={() => setShowImportModal(false)}
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+          />
+          <div className="relative w-full max-w-lg bg-white rounded-3xl p-6 border border-slate-200 shadow-2xl z-10 space-y-4 animate-in zoom-in-95">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                  <Upload className="w-4 h-4" />
+                </div>
+                <h4 className="font-bold text-sm text-slate-900">
+                  Import Authenticated Users
+                </h4>
+              </div>
+              <button
+                onClick={() => setShowImportModal(false)}
+                className="p-1 text-slate-400 hover:text-slate-700"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Upload or paste the CSV / JSON exported from the <a href="https://console.firebase.google.com/project/global-and-indiavc/authentication/users" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold underline">Firebase Authentication Console</a>. You can also paste comma-separated user emails.
+            </p>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-bold text-slate-700">Paste CSV, JSON or Emails</label>
+                <label className="text-[11px] text-indigo-600 hover:underline cursor-pointer font-bold flex items-center gap-1">
+                  <FileUp className="w-3 h-3" />
+                  <span>Upload File</span>
+                  <input
+                    type="file"
+                    accept=".csv,.json,.txt"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              <textarea
+                rows={6}
+                value={importText}
+                onChange={(e) => setImportText(e.target.value)}
+                placeholder="Paste CSV lines, JSON from Firebase Auth, or emails like: user1@gmail.com, user2@gmail.com..."
+                className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-500"
+              />
+            </div>
+
+            {importSuccessMsg && (
+              <div className="p-2.5 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-xl border border-emerald-200 flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>{importSuccessMsg}</span>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowImportModal(false)}
+                className="px-3 py-1.5 rounded-xl text-xs text-slate-600 hover:bg-slate-100 font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleProcessImport}
+                className="px-4 py-1.5 rounded-xl text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-colors cursor-pointer shadow-xs"
+              >
+                Import &amp; Sync Users
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
