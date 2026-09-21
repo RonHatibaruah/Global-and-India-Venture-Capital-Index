@@ -16,7 +16,7 @@ import { VC_FUNDS } from './data/vcFunds';
 import { slugify } from './data/categories';
 import { Search, Sparkles, ArrowUp, Scale } from 'lucide-react';
 
-const BASE_ORIGIN = 'https://topvc.flugelsoft.com';
+const BASE_ORIGIN = 'https://vc.flugelsoft.com';
 
 export function updateSEO({ title, description, canonicalUrl, fund = null }) {
   document.title = title;

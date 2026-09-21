@@ -1,7 +1,7 @@
 # 🧵 20 Storytelling Content Posts for Threads (threads.net)
 
 > **Curated by:** [Ron Hatibaruah](https://www.linkedin.com/in/ronhatibaruah/) & [Kalyanjit Hatibaruah](https://www.linkedin.com/in/kalyanjit)  
-> **Platform Resource:** [Global & India Venture Capital Index](https://topvc.flugelsoft.com)
+> **Platform Resource:** [Global & India Venture Capital Index](https://vc.flugelsoft.com)
 
 ---
 
@@ -22,7 +22,7 @@ The partner? They look at 3 things:
 
 If slide 3 doesn’t hook them, slides 4 through 40 don’t exist.
 
-We mapped the ideal 10-slide deck at topvc.flugelsoft.com 🚀
+We mapped the ideal 10-slide deck at vc.flugelsoft.com 🚀
 ```
 
 ---
@@ -39,7 +39,7 @@ How? He signed a Series A term sheet with a "2x Participating Preferred" clause.
 
 Never sign "Participating Preferred". Always demand "1x Non-Participating".
 
-We broke down all term sheet red flags at topvc.flugelsoft.com ⚠️
+We broke down all term sheet red flags at vc.flugelsoft.com ⚠️
 ```
 
 ---
@@ -74,7 +74,7 @@ Founder dilution jumped from 20% to 32% before the first dollar hit the bank acc
 
 The fix: Negotiate the option pool down to actual 12-month hiring needs (typically 7-10%).
 
-Details in the Founder Playbook at topvc.flugelsoft.com 💡
+Details in the Founder Playbook at vc.flugelsoft.com 💡
 ```
 
 ---
@@ -91,7 +91,7 @@ It was unit economics and 90-day retention cohorts. While others were buying one
 
 In venture capital, retention is the only metric that doesn't lie.
 
-Explore 50+ India & Global VC funds and their decacorn portfolios at topvc.flugelsoft.com 🇮🇳
+Explore 50+ India & Global VC funds and their decacorn portfolios at vc.flugelsoft.com 🇮🇳
 ```
 
 ---
@@ -120,7 +120,7 @@ The rules of fundraising changed completely this year:
 
 Stop pitching growth metrics to angel investors and seed decks to Series A partners.
 
-Full benchmark matrix at topvc.flugelsoft.com 📊
+Full benchmark matrix at vc.flugelsoft.com 📊
 ```
 
 ---
@@ -247,7 +247,7 @@ Understanding the India VC landscape:
 2. The Early-Stage Specialists (Blume, 3one4, Speciale, Chiratae, Kalaari): Seed-focused, founder-operator empathy, bridge to global tiers.
 3. The Growth & Late-Stage Heavyweights (WestBridge, PremjiInvest, ChrysCapital, Kedaara): High governance, profitability focus, pre-IPO scale.
 
-Filter all 50+ India funds at topvc.flugelsoft.com 🇮🇳
+Filter all 50+ India funds at vc.flugelsoft.com 🇮🇳
 ```
 
 ---
@@ -325,5 +325,5 @@ Ron Hatibaruah and Kalyanjit Hatibaruah spent months compiling the definitive op
 
 Built for founders looking to raise in 2026.
 
-Check it out free: https://topvc.flugelsoft.com 🚀
+Check it out free: https://vc.flugelsoft.com 🚀
 ```

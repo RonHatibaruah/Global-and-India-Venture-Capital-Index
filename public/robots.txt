@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ycombinator.flugelsoft.com/sitemap.xml
+Sitemap: https://vc.flugelsoft.com/sitemap.xml

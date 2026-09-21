@@ -1,7 +1,7 @@
 # 🚀 Global & India Venture Capital Index — Multi-Platform Social Media Launch Kit
 
 > **Curated by:** [Ron Hatibaruah](https://www.linkedin.com/in/ronhatibaruah/) & [Kalyanjit Hatibaruah](https://www.linkedin.com/in/kalyanjit)  
-> **Platform Live URL:** `https://topvc.flugelsoft.com` (or your chosen custom domain)
+> **Platform Live URL:** `https://vc.flugelsoft.com` (or your chosen custom domain)
 
 ---
 
@@ -14,7 +14,7 @@ To solve this, Ron Hatibaruah and I (Kalyanjit Hatibaruah) spent months mapping 
 
 🌟 Global & India Venture Capital (VC) Index + Founder Fundraising Masterclass
 
-👉 Live Platform: https://topvc.flugelsoft.com
+👉 Live Platform: https://vc.flugelsoft.com
 
 Here is what we built for early-stage & growth founders:
 
@@ -40,7 +40,7 @@ If you are a founder preparing to raise in 2026, an angel investor, or an operat
 
 Check it out, bookmark your target investor list, and let us know what you think in the comments! 👇
 
-🔗 Platform: https://topvc.flugelsoft.com
+🔗 Platform: https://vc.flugelsoft.com
 🔗 Connect with Ron: https://www.linkedin.com/in/ronhatibaruah/
 🔗 Connect with Kalyanjit: https://www.linkedin.com/in/kalyanjit
 
@@ -98,7 +98,7 @@ Built-in frameworks for raising capital:
 ```markdown
 4/ Explore the platform for free today:
 
-🔗 https://topvc.flugelsoft.com
+🔗 https://vc.flugelsoft.com
 
 Curated by @RonHatibaruah & @kalyanjit.
 
@@ -112,11 +112,11 @@ If this helps your fundraising journey, RT the first tweet to help other founder
 ```markdown
 Title: Show HN: Global & India Venture Capital Index with Interactive Founder Playbook
 
-Link: https://topvc.flugelsoft.com
+Link: https://vc.flugelsoft.com
 
 Hi HN,
 
-We built the Global & India Venture Capital Index to bring transparency to early-stage & growth fundraising: https://topvc.flugelsoft.com
+We built the Global & India Venture Capital Index to bring transparency to early-stage & growth fundraising: https://vc.flugelsoft.com
 
 Why we built this:
 Founders spend months building investor target lists from scratch, often relying on outdated spreadsheets or expensive paywalled databases. We wanted to create an open, curated intelligence hub specifically covering top Global and India-focused venture capital funds, complete with partner names, check sizes, prestige tiers, and active portfolio decacorns.
@@ -144,7 +144,7 @@ Hey everyone,
 Fundraising is notoriously opaque. Knowing which partner leads which round, what traction benchmarks are expected at Seed vs Series A, and what term sheet red flags to watch out for can save founders months of agony.
 
 My co-curator (Ron Hatibaruah) and I built a free directory and masterclass:
-👉 https://topvc.flugelsoft.com
+👉 https://vc.flugelsoft.com
 
 What's inside:
 1. Curated VC Index: 50+ leading venture firms with active India and global investments (Peak XV, Accel India, Elevation, Nexus, Matrix India/Z47, Blume, Kalaari, WestBridge, etc.) with AUM, stage, check sizes ($100k to $100M+), and key partners.
@@ -158,7 +158,7 @@ What's inside:
 4. Interactive Readiness Calculator: 4-question diagnostic to see if your traction matches institutional VC criteria.
 5. Export to CSV/JSON: Build your CRM list in seconds.
 
-Check it out here: https://topvc.flugelsoft.com
+Check it out here: https://vc.flugelsoft.com
 
 Would love any feedback, suggested fund additions, or founder questions!
 ```
@@ -172,7 +172,7 @@ Would love any feedback, suggested fund additions, or founder questions!
 
 Ron Hatibaruah and Kalyanjit Hatibaruah have launched the *Global & India Venture Capital Index + Founder Playbook*:
 
-🔗 *https://topvc.flugelsoft.com*
+🔗 *https://vc.flugelsoft.com*
 
 ✨ *What's inside:*
 • 📊 *50+ Top VC Funds*: Peak XV, Accel, Elevation, Nexus, Blume, WestBridge, PremjiInvest, etc.
@@ -182,7 +182,7 @@ Ron Hatibaruah and Kalyanjit Hatibaruah have launched the *Global & India Ventur
 • 📥 *1-Click Export*: Download full investor pipeline as CSV/JSON for your CRM.
 
 Bookmark your target investor list today:
-👉 https://topvc.flugelsoft.com
+👉 https://vc.flugelsoft.com
 ```
 
 ---
@@ -201,5 +201,5 @@ Step 4: Watch out for toxic term sheet clauses like Participating Preferred or t
 
 [CTA - 0:35 to 0:60]
 "We built an entire free database mapping 50+ top global and India VC funds, plus visual pitch deck frameworks and copy-paste email templates.
-Check out the link in bio or head to topvc.flugelsoft.com curated by Ron & Kalyanjit Hatibaruah. Drop a comment if you're fundraising this quarter!"
+Check out the link in bio or head to vc.flugelsoft.com curated by Ron & Kalyanjit Hatibaruah. Drop a comment if you're fundraising this quarter!"
 ```
